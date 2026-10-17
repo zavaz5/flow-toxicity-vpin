@@ -1,0 +1,11 @@
+#,"Ours on IVE, 2009–11 (± s.e.)",95% interval,Verdict
+1,3.7%,"dispersion over 1,000 starts",reproduced
+2,"significantly lower: 1 of 4 (50/day), 2 of 4 (100/day); point estimates lower: 3 and 4 of 4","paired bootstrap, P ≥ 0.95",partly
+3,4.9 h,one event: no ±,reproduced
+4,only during the fall,one event: no ±,not reproduced
+5,never (max CDF 0.85),one event: no ±,not reproduced
+6,96.1% ± 0.5%,"[95.0%, 97.2%]",reproduced
+7,0.08 ± 0.05,"[0.04, 0.22]",weaker
+8,51% ± 13%,"[19%, 71%]",weaker
+9,34% ± 4%,"[26%, 43%]",weaker
+10,60% ± 12%,"[37%, 85%]",inconclusive

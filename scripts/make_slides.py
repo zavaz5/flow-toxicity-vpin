@@ -208,17 +208,18 @@ def is_vs_oos_bars(path: Path):
     """In-sample vs out-of-sample correlation of VPIN for each parameter choice, and RV."""
     df = pd.read_csv(EXT / "ive_oos_comparison.csv")
     choices = list(dict.fromkeys(df["choice"]))
-    get = lambda c, per, sig: df[(df["choice"] == c) & (df["period"] == per) & (df["signal"] == sig)]["corr"].iloc[0]
+    get = lambda c, per, sig, col="corr": df[(df["choice"] == c) & (df["period"] == per) & (df["signal"] == sig)][col].iloc[0]
     x = np.arange(len(choices))
     fig, ax = plt.subplots(figsize=(6.2, 3.8))
     w = 0.27
-    ax.bar(x - w, [get(c, "in-sample", "VPIN") for c in choices], w, color=P.OURS, alpha=0.45, label="VPIN, in sample (2009–11)")
-    ax.bar(x, [get(c, "out-of-sample", "VPIN") for c in choices], w, color=P.OURS, label="VPIN, out of sample (2011–26)")
-    ax.bar(x + w, [get(c, "out-of-sample", "RV (trailing volatility)") for c in choices], w, color=P.GREY,
-           label="trailing volatility, out of sample")
+    for dx, per, sig, kw in [(-w, "in-sample", "VPIN", {"color": P.OURS, "alpha": 0.45, "label": "VPIN, in sample (2009–11)"}),
+                             (0, "out-of-sample", "VPIN", {"color": P.OURS, "label": "VPIN, out of sample (2011–26)"}),
+                             (w, "out-of-sample", "RV (trailing volatility)", {"color": P.GREY, "label": "trailing volatility, out of sample"})]:
+        ax.bar(x + dx, [get(c, per, sig) for c in choices], w, yerr=[get(c, per, sig, "corr_se") for c in choices],
+               capsize=2, error_kw={"lw": 0.8}, **kw)
     labels = [c.replace("paper Table 5", "paper's\nTable 5").replace("best in-sample ", "best in-sample\n") for c in choices]
     ax.set_xticks(x, labels, fontsize=8)
-    ax.set_ylabel("Corr(ln signal, next |return|)")
+    ax.set_ylabel("Corr(ln signal, next |return|) ± s.e.")
     ax.legend(fontsize=8, loc="upper right")
     fig.savefig(path, bbox_inches="tight", dpi=200)
     plt.close(fig)
@@ -334,214 +335,260 @@ def build(paper_pdf: Path, out: Path):
     ], size=15, space=9)
     picture(s, REP / "figures" / "fig6_vpin_history.png", (6.7, 2.5, 6.3, 3.9))
 
-    # 6. Data
+    u250, u350 = pred["uncertainty"]["50_250"], pred["uncertainty"]["10_350"]
+    o = k["ive_oos"]
+    pm = lambda st, as_pct=False: (f"{st['value']:.0%} ± {st['se']:.0%}" if as_pct else f"{st['value']:.2f} ± {st['se']:.2f}")
+    ci = lambda st, as_pct=False: (f"[{st['lo']:.0%}, {st['hi']:.0%}]" if as_pct else f"[{st['lo']:.2f}, {st['hi']:.2f}]")
+    se = lambda r, key, as_pct=False: (f"{r[key]:.0%} ± {r[key + '_se']:.0%}" if as_pct else f"{r[key]:.2f} ± {r[key + '_se']:.2f}")
+
+    # 6. Objectives: estimated vs chosen vs evaluated
+    s = slide_with_title(prs, "What is estimated, what is chosen, what is evaluated", (
+        "Method, ~45 s. Anticipates 'what was the objective?'. VPIN is not trained: it is a moment estimator "
+        "(average absolute imbalance over volume) of the PIN ratio, so it has no loss function. The only "
+        "optimisation in the paper is the choice of bucket size and window: they scan grids and report the "
+        "best cell, i.e. the selection objective IS the evaluation statistic, on the same data. We separate "
+        "the two: select on 2009-11, evaluate on 2011-26."))
+    df = pd.DataFrame([
+        ("Estimate PIN (original model)", "Maximise the likelihood of a Poisson mixture: α, μ, ε, δ", "daily buy and sell counts"),
+        ("Estimate VPIN", "Nothing is fitted: average |sell − buy volume| / V, a moment estimate of αμ / (αμ + 2ε)", "the last n buckets"),
+        ("Inputs σ and V", "Standard deviation of one-minute price changes; average daily volume / 50", "paper: whole sample · ours, real-time: previous 250 days"),
+        ("Choose buckets/day and n", "Paper: grid cell with the highest corr(ln VPIN, next |return|) (Fig. 10) or true-positive rate (Table 5)", "paper: the evaluation sample itself · ours: 2009–11, then frozen"),
+        ("Evaluate", "Corr with next |return|; P(VPIN high | big move); true positives. We add lift and ΔR² over volatility", "paper: in sample · ours: 2011–26, out of sample"),
+    ], columns=["Step", "Objective", "Data used"])
+    table(s, df, (0.64, 2.4, 12.05, 3.4), widths=[2.6, 5.6, 3.85], size=12)
+    text(s, (0.64, 6.0, 12.0, 1.0), [
+        "**VPIN has no training objective.** The paper's only optimisation is the parameter search, and it maximises the statistic it then reports, on the same data. We select on 2009–11 and evaluate on 2011–26.",
+    ], size=14, color=NAVY)
+
+    # 7. Data
     s = slide_with_title(prs, "Data and our replication setup", (
         "Data, ~1 min. CME data are paid, so we use the only free tick history with quotes we found: IVE from "
         "Kibot, which covers the flash crash. Binance BTC data give the true aggressor side, which the paper "
-        "never had. All deviations with reasons: DEVIATIONS.md. Numbers: results/reproduction/summary.json."))
-    t2 = k["table2"]
+        "never had. This table compares set-ups, not results. All deviations with reasons: DEVIATIONS.md."))
     df = pd.DataFrame([
         ("Market", "E-mini S&P 500 and WTI crude futures", "IVE (S&P 500 Value ETF) ticks with quotes; BTCUSDT for extensions"),
         ("Period", "Jan 2008 – Aug 2011 (incl. 2008 crisis)", f"{data['period'][0]} – {data['period'][1]}; out of sample to Sep 2026"),
         ("Trading hours", "almost 24 hours", "09:30–16:00 New York"),
-        ("VPIN observations (50, 50)", f"{t2['paper']['#Observ.']:,}", f"{int(t2['ours']['#Observ.']):,}"),
         ("Classification", "bulk, one-minute bars", "same, plus 10-second bars and Lee-Ready"),
         ("Settings", "V = ADV/50, n = 50, whole-sample σ and CDF", "identical"),
-    ], columns=["", "Paper", "Ours"])
-    table(s, df, (0.64, 2.45, 12.05, 3.0), widths=[2.6, 4.2, 5.25], size=13)
-    text(s, (0.64, 5.7, 12.0, 1.4), [
+    ], columns=["Set-up", "Paper", "Ours"])
+    table(s, df, (0.64, 2.45, 12.05, 2.6), widths=[2.6, 4.2, 5.25], size=13)
+    text(s, (0.64, 5.4, 12.0, 1.6), [
         f"Main deviations: ETF instead of futures; regular hours only; our sample starts in Sep 2009 (no 2008 crisis); "
         f"42 IVE trades at prices like $0.08 that the exchanges **cancelled** on 6 May 2010 are removed. "
         f"{data['share_bars_no_price_change']:.0%} of IVE one-minute bars have no price change, and bulk classification splits them 50/50.",
+        "**±** on our numbers: block bootstrap over calendar months (1,000 replications), because VPIN windows overlap and volatility clusters.",
     ], size=13, color=MUTED)
 
-    # 7. Flash crash
+    # 8. Flash crash
     s = slide_with_title(prs, "Result 1: the flash crash, paper vs ours", (
         "Results, ~1 min. Paper Fig. 4(a): CDF(VPIN) crossed 0.9 at least two hours before the crash. Ours, "
         f"one-minute bars: CDF above 0.9 from {fc['BVC, 1-minute bars']['first'][11:16]}, {fc['BVC, 1-minute bars']['lead_hours']:.1f} h before 14:32. "
-        "But with 10-second bars it crosses only during the crash, and with Lee-Ready never. "
-        "So the early warning depends on how volume is classified. Source: results/reproduction/flash_crash.csv."))
+        "With 10-second bars it crosses only during the crash, and with Lee-Ready never. One event, so no ± is "
+        "possible; the point is that the warning depends on the classification choice. "
+        "Source: results/reproduction/flash_crash.csv."))
     picture(s, figs["paper_fig4"], (0.4, 2.4, 4.1, 3.4))
     text(s, (0.4, 5.75, 4.1, 0.4), [("Paper, Fig. 4(a): E-mini, one-minute bars", {"bullet": False, "size": 11, "color": MUTED, "align": PP_ALIGN.CENTER})])
     picture(s, REP / "figures" / "fig4_flash_crash.png", (4.6, 2.45, 8.5, 2.9))
+    text(s, (4.6, 5.3, 8.5, 0.35), [("Ours: IVE, 6 May 2010, three classification schemes", {"bullet": False, "size": 11, "color": MUTED, "align": PP_ALIGN.CENTER})])
     lr = fc["Lee-Ready, trade by trade"]
-    text(s, (4.7, 5.4, 8.3, 1.7), [
-        f"**One-minute bars:** CDF > 0.9 from {fc['BVC, 1-minute bars']['first'][11:16]}, **{fc['BVC, 1-minute bars']['lead_hours']:.1f} h** before the fall — as in the paper.",
+    text(s, (4.7, 5.7, 8.3, 1.4), [
+        f"**One-minute bars:** CDF > 0.9 from {fc['BVC, 1-minute bars']['first'][11:16]}, **{fc['BVC, 1-minute bars']['lead_hours']:.1f} h** before the fall, as the paper says.",
         f"**10-second bars:** first above 0.9 at {fc['BVC, 10-second bars']['first'][11:16]}, during the fall. **Lee-Ready:** never (max CDF {lr['max_cdf']:.2f}).",
-        "The warning depends on the classification choice.",
-    ], size=13, space=4)
+        "One event: no ± possible. The warning depends on the classification choice.",
+    ], size=13, space=3)
 
-    # 8. Volume clock + stability
+    # 9. Volume clock + stability: the paper's table and ours, separately
     s = slide_with_title(prs, "Result 2: the volume clock and the stability of VPIN", (
-        "Results, ~1 min. Table 1: sampling by volume should give price changes closer to normal. On IVE the raw "
-        "table is dominated by one observation: on 6 May 2010 IVE fell to about half its price for minutes. "
-        "Without that day and without overnight changes (which a 24-hour futures market does not have), volume "
-        "time wins on most statistics. Stability: restarting buckets 1,000 times barely moves VPIN. "
-        "Sources: results/reproduction/table1_*.csv, summary.json (stability)."))
-    ours = pd.read_csv(REP / "table1_50_no_crash_day_intraday.csv", index_col=0)
-    rows = []
-    for stat in ["Kurt", "J-B*", "L-B*", "White*", "Max"]:
-        rows.append((stat, f"{PN.TABLE1_50['Chrono time'][stat]:.2f}", f"{PN.TABLE1_50['Volume time'][stat]:.2f}",
-                     f"{ours.loc[stat, 'Chrono time']:.2f}", f"{ours.loc[stat, 'Volume time']:.2f}"))
-    df = pd.DataFrame(rows, columns=["50 draws a day", "Paper: clock", "Paper: volume", "Ours: clock", "Ours: volume"])
-    better = {(i, 4): GREEN for i, r in enumerate(rows) if float(r[4]) < float(r[3])}
-    better.update({(i, 2): GREEN for i, r in enumerate(rows) if float(r[2]) < float(r[1])})
-    table(s, df, (0.64, 2.45, 7.0, 2.6), size=13, fills=better)
-    w = k["table1"]["wins_clean"]
-    text(s, (0.64, 5.2, 7.0, 1.9), [
-        f"Volume time improves {w['50'][0]} of 4 test statistics at 50 draws a day and {w['100'][0]} of 4 at 100 (green = lower than clock time).",
-        "Computed without 6 May 2010 and without overnight changes; the raw table is dominated by the flash crash (DEVIATIONS.md, row 8).",
-    ], size=13, color=MUTED)
-    text(s, (8.0, 2.45, 4.8, 0.5), [("Stability (Fig. 5)", {"bullet": False, "bold": True, "size": 16, "color": NAVY})])
-    text(s, (8.0, 3.0, 4.8, 3.8), [
-        "Start the bucket sequence 0, 1, …, 999 bars later and compare the VPIN paths.",
-        f"Cross-sectional std / mean VPIN: paper **{k['stability']['paper']:.1%}**, ours **{k['stability']['ours']:.1%}**.",
-        "VPIN does not depend on where the volume clock starts. **Reproduced.**",
-    ], size=14, space=8)
+        "Results, ~1 min. Two separate tables: the paper's Table 1 and ours. Ours drops 6 May 2010 (IVE fell to "
+        "about half its price for minutes; one change of ~100 sigma sets the kurtosis) and overnight changes "
+        "(a 24-hour futures market has none). Last column: in how many paired bootstrap replications volume "
+        "time has the lower value; green = at least 95%. Sources: results/reproduction/table1_*_bootstrap.csv, "
+        "summary.json (stability)."))
+    stats = ["Kurt", "J-B*", "L-B*", "White*", "Max"]
+    text(s, (0.64, 2.3, 4.6, 0.4), [("Paper: E-mini, 2008–11", {"bullet": False, "bold": True, "color": NAVY, "size": 14})])
+    paper_t1 = pd.DataFrame([(st, f"{PN.TABLE1_50['Chrono time'][st]:.2f}", f"{PN.TABLE1_50['Volume time'][st]:.2f}") for st in stats],
+                            columns=["50 draws a day", "Clock", "Volume"])
+    table(s, paper_t1, (0.64, 2.75, 4.4, 2.55), widths=[1.7, 1.35, 1.35], size=12,
+          fills={(i, 2): GREEN for i, st in enumerate(stats) if PN.TABLE1_50["Volume time"][st] < PN.TABLE1_50["Chrono time"][st]})
+    b1 = k["table1_boot"]["50"]
+    text(s, (5.5, 2.3, 7.5, 0.4), [("Ours: IVE, 2009–11 (± s.e.)", {"bullet": False, "bold": True, "color": NAVY, "size": 14})])
+    ours_t1 = pd.DataFrame([(st, f"{b1[st]['Chrono time']:.2f} ± {b1[st]['Chrono ±']:.2f}", f"{b1[st]['Volume time']:.2f} ± {b1[st]['Volume ±']:.2f}",
+                             f"{b1[st]['P(volume < clock)']:.3f}") for st in stats],
+                           columns=["50 draws a day", "Clock", "Volume", "P(volume lower)"])
+    table(s, ours_t1, (5.5, 2.75, 7.4, 2.55), widths=[1.6, 2.05, 1.95, 1.8], size=12,
+          fills={(i, 3): GREEN for i, st in enumerate(stats) if b1[st]["P(volume < clock)"] >= 0.95})
+    sig = k["table1_significant"]
+    text(s, (0.64, 5.5, 12.4, 1.6), [
+        f"Ours: volume time is **significantly** lower on {sig['50']} of the 4 test statistics at 50 draws a day and {sig['100']} of 4 at 100; tails and White* clearly improve, autocorrelation (L-B*) does not at 50.",
+        f"**Stability (Fig. 5):** restarting the buckets 0, 1, …, 999 bars later changes VPIN by {k['stability']['ours']:.1%} of its mean on IVE; the paper reports {k['stability']['paper']:.1%} for the E-mini.",
+    ], size=13, space=6)
 
-    # 9. Correlation surface
+    # 10. Correlation surface
     s = slide_with_title(prs, "Result 3: does VPIN predict the next bucket's volatility?", (
-        "Results, ~1 min. Paper Fig. 10: correlation of ln VPIN with the next bucket's absolute return, over "
-        "buckets per day and window length; 0.40 at (50, 250). Ours is the same computation on IVE: "
-        f"{pred['corr_50_250']:.2f} at (50, 250) and at most {pred['corr_max']:.2f} anywhere on the grid. "
-        f"Not the overnight gaps: without buckets spanning the close it is {pred['corr_50_250_intraday']:.2f}. "
-        "Source: results/reproduction/parameter_grid.csv."))
-    picture(s, figs["paper_fig10"], (0.4, 2.35, 5.6, 4.0))
-    text(s, (0.4, 6.35, 5.6, 0.4), [("Paper, Fig. 10: E-mini", {"bullet": False, "size": 11, "color": MUTED, "align": PP_ALIGN.CENTER})])
-    picture(s, REP / "figures" / "fig10_correlation.png", (6.2, 2.35, 4.6, 4.1))
-    text(s, (10.85, 2.5, 2.3, 4.2), [
-        ("At (50, 250)", {"bullet": False, "bold": True, "color": NAVY, "size": 15}),
-        (f"paper **{PN.CORR_50_250:.2f}**", {"bullet": False, "size": 15}),
-        (f"ours **{pred['corr_50_250']:.2f}**", {"bullet": False, "size": 15, "space": 14}),
-        (f"Best cell on our grid: {pred['corr_max']:.2f}", {"bullet": False, "size": 13, "color": MUTED}),
-        ("Same sign, a fifth of the size.", {"bullet": False, "size": 13, "color": MUTED}),
-    ], size=14)
+        "Results, ~1 min. Paper Fig. 10 vs the same computation on IVE. Each caption gives its own source's "
+        "number. The paper's interval (footnote 29) treats buckets as independent; neighbouring VPIN values "
+        "share almost all of their window, so it is far too narrow. With the same iid formula ours would be "
+        f"[{pred['corr_50_250_fisher_ci_iid'][0]:.2f}, {pred['corr_50_250_fisher_ci_iid'][1]:.2f}]; month blocks give {ci(u250['corr'])}. "
+        "Source: results/reproduction/parameter_grid.csv, summary.json."))
+    picture(s, figs["paper_fig10"], (0.4, 2.35, 5.6, 3.9))
+    text(s, (0.4, 6.25, 5.6, 0.7), [(f"Paper (E-mini): {PN.CORR_50_250:.2f} at (50, 250), 95% CI [{PN.CORR_50_250_CI[0]:.3f}, {PN.CORR_50_250_CI[1]:.3f}] (iid)",
+                                     {"bullet": False, "size": 12, "color": MUTED, "align": PP_ALIGN.CENTER})])
+    picture(s, REP / "figures" / "fig10_correlation.png", (6.2, 2.35, 4.6, 3.9))
+    text(s, (6.2, 6.25, 4.6, 0.7), [(f"Ours (IVE): {pm(u250['corr'])} at (50, 250), 95% CI {ci(u250['corr'])}",
+                                     {"bullet": False, "size": 12, "color": MUTED, "align": PP_ALIGN.CENTER})])
+    text(s, (10.9, 2.45, 2.25, 4.4), [
+        ("On IVE", {"bullet": False, "bold": True, "color": NAVY, "size": 15}),
+        ("Same sign; 0.40 is outside our interval.", {"bullet": False, "size": 13, "space": 12}),
+        ("About the ±", {"bullet": False, "bold": True, "color": NAVY, "size": 15}),
+        (f"An iid interval would give ours as [{pred['corr_50_250_fisher_ci_iid'][0]:.2f}, {pred['corr_50_250_fisher_ci_iid'][1]:.2f}]: overlapping windows make it far too narrow.",
+         {"bullet": False, "size": 13}),
+    ], size=13)
 
-    # 10. Tables 4 and 5
+    # 11. Tables 4 and 5
     s = slide_with_title(prs, "Result 4: high VPIN and large moves (Tables 4 and 5)", (
-        "Results, ~1 min. Left/right: paper's Table 4a and ours as heat maps. Low VPIN does mean calm: in the "
-        "bottom quartile the next move is below 0.25% almost always, in both. But high VPIN does not spread "
-        "the next return out as much on IVE. Insurance value and true positives are lower. Sources: "
-        "results/reproduction/table4a.csv, table5.csv, summary.json."))
+        "Results, ~1 min. The heat maps are two separate panels: the paper's Table 4a and ours. Low VPIN does "
+        "mean calm in both. The warning claims are weaker on IVE; the Table 5 number is consistent with ours "
+        "only because our interval is wide (few stays in the top quartile at 10 buckets a day). Sources: "
+        "results/reproduction/table4a.csv, table5.csv, summary.json (uncertainty)."))
     picture(s, REP / "figures" / "table4a_conditional.png", (0.3, 2.3, 8.6, 4.9))
-    text(s, (9.0, 2.45, 4.1, 4.5), [
-        (f"Bottom-quartile VPIN → next |return| < 0.25%: paper > {PN.BOTTOM_QUARTILE_SMALL_MOVE:.0%}, ours **{pred['bottom_quartile_small_move']:.0%}**", {}),
-        (f"P(VPIN in top quartile | next |return| > 0.75%): paper > {PN.INSURANCE_50_250:.0%}, ours **{pred['insurance_50_250']:.0%}**", {}),
-        (f"Large move while VPIN stays in its top quartile (Table 5): paper **{PN.TRUE_POSITIVE_10_350:.0%}**, ours **{pred['true_positive_10_350']:.0%}** at (10, 350)", {}),
-        ("Low VPIN = calm reproduces; the warning value is weaker.", {"bold": True, "color": NAVY}),
-    ], size=14, space=10)
+    text(s, (9.0, 2.35, 4.1, 2.0), [
+        ("Paper reports (E-mini)", {"bullet": False, "bold": True, "color": NAVY, "size": 14}),
+        (f"Bottom-quartile VPIN → next |return| < 0.25%: > {PN.BOTTOM_QUARTILE_SMALL_MOVE:.0%}", {"size": 12}),
+        (f"P(VPIN top quartile | move > 0.75%): > {PN.INSURANCE_50_250:.0%}", {"size": 12}),
+        (f"Big move while VPIN stays high, (10, 350): {PN.TRUE_POSITIVE_10_350:.1%}", {"size": 12}),
+    ], size=12, space=4)
+    text(s, (9.0, 4.45, 4.1, 2.6), [
+        ("On IVE (± s.e.)", {"bullet": False, "bold": True, "color": NAVY, "size": 14}),
+        (f"Bottom quartile → < 0.25%: **{u250['bottom_small']['value']:.1%} ± {u250['bottom_small']['se']:.1%}**", {"size": 12}),
+        (f"P(top quartile | move > 0.75%): **{pm(u250['insurance'], True)}**", {"size": 12}),
+        (f"Big move while VPIN stays high, (10, 350): **{pm(u350['tp_top'], True)}**, 95% CI {ci(u350['tp_top'], True)}", {"size": 12}),
+        ("Low VPIN = calm reproduces; the warning value is weaker or uncertain.", {"bold": True, "color": NAVY, "size": 12}),
+    ], size=12, space=4)
 
-    # 11. Scorecard
+    # 12. Scorecard: two tables, same row numbers
     s = slide_with_title(prs, "Reproduction scorecard", (
-        "Summary of the reproduction. The verdict rule is fixed in code (scripts/make_report.py): ours/paper "
-        ">= 0.8 reproduced, 0.4-0.8 weaker, below 0.4 much weaker. Mechanics reproduce; predictive claims are "
-        "weaker. Source: results/report/scorecard.csv."))
-    sc = pd.read_csv(ROOT / "results" / "report" / "scorecard.csv")
-    colours = {"reproduced": GREEN, "weaker": ORANGE, "much weaker": RED, "not reproduced": RED, "partly": ORANGE}
-    fills = {(i, 3): colours.get(v, MUTED) for i, v in enumerate(sc["Verdict"])}
-    table(s, sc, (0.64, 2.35, 12.05, 4.6), widths=[6.6, 1.6, 2.35, 1.5], size=11, fills=fills)
+        "Summary. Left: what the paper reports. Right: what we find on IVE, with ± and a verdict that uses only "
+        "our own data: reproduced if the paper's value is inside our 95% interval and the effect's direction is "
+        "significant; inconclusive if inside but not significant; weaker if outside but the direction holds; "
+        "not reproduced otherwise. Rule in scripts/make_report.py. Sources: results/report/scorecard_*.csv."))
+    sp = pd.read_csv(ROOT / "results" / "report" / "scorecard_paper.csv")
+    so = pd.read_csv(ROOT / "results" / "report" / "scorecard_ours.csv")
+    short_ours = so.iloc[:, 1].tolist()
+    short_ours[1] = f"{sig['50']} of 4 / {sig['100']} of 4 significant"
+    short_ci = ["–" if "event" in c or "dispersion" in c else ("P ≥ 0.95" if "paired" in c else c) for c in so.iloc[:, 2]]
+    text(s, (0.4, 2.2, 7.7, 0.35), [("Paper reports: E-mini, 2008–11", {"bullet": False, "bold": True, "color": NAVY, "size": 13})])
+    table(s, sp.iloc[:, :3].rename(columns={sp.columns[2]: "Reported"}), (0.4, 2.6, 7.7, 4.5), widths=[0.35, 5.75, 1.6], size=10)
+    text(s, (8.25, 2.2, 4.75, 0.35), [("Ours: IVE, 2009–11", {"bullet": False, "bold": True, "color": NAVY, "size": 13})])
+    ours_tab = pd.DataFrame({"#": so["#"], "Ours (± s.e.)": short_ours, "95% interval": short_ci, "Verdict": so["Verdict"]})
+    colours = {"reproduced": GREEN, "weaker": ORANGE, "partly": ORANGE, "inconclusive": MUTED, "not reproduced": RED}
+    table(s, ours_tab, (8.25, 2.6, 4.75, 4.5), widths=[0.35, 1.6, 1.3, 1.5], size=10,
+          fills={(i, 3): colours.get(v, MUTED) for i, v in enumerate(so["Verdict"])})
 
-    # 12. Overfitting
+    # 13. Overfitting
+    best = o["best in-sample true positive"]
     s = slide_with_title(prs, "How could these results be overfit?", (
         "Critique, ~1.5 min (required slide). Four ways the paper's numbers can be too good, and our check: a "
         "real-time pipeline (sigma, bucket size and CDF from the past only) with parameters frozen on the paper's "
-        "period and tested on 2011-2026. The parameter pair with the best in-sample correlation keeps little of "
-        "it out of sample. Source: results/extensions/ive_oos_comparison.csv."))
-    o = k["ive_oos"]
-    best = o["best in-sample true positive"]
+        "period and tested on 2011-2026. Error bars are ± one bootstrap standard error. "
+        "Source: results/extensions/ive_oos_comparison.csv."))
     text(s, (0.64, 2.4, 6.3, 4.6), [
         ("In the paper", {"bullet": False, "bold": True, "color": NAVY, "size": 16}),
         "The CDF of VPIN is built from the **whole sample**, future included.",
         "Bucket size and window are picked by **scanning grids** on the same data (Figs. 10, 12, 14); Table 5 reports the best cell.",
-        "**No out-of-sample** period. One flash crash = one observation.",
+        "**No out-of-sample** period; its ± assumes independent buckets. One flash crash = one observation.",
         ("Our check", {"bullet": False, "bold": True, "color": NAVY, "size": 16}),
         "Real-time VPIN: σ, V and CDF from **past data only**; parameters frozen in 2009–11, tested on 2011–26.",
         f"Best in-sample true-positive pair {tuple(k['ive_chosen']['best in-sample true positive'])}: "
-        f"**{best['in-sample']['VPIN']['true_positive_top']:.0%} → {best['out-of-sample']['VPIN']['true_positive_top']:.0%}** "
-        f"out of sample (bottom quartile: {best['out-of-sample']['VPIN']['true_positive_bottom']:.0%}).",
+        f"**{se(best['in-sample']['VPIN'], 'true_positive_top', True)} → {se(best['out-of-sample']['VPIN'], 'true_positive_top', True)}** "
+        f"out of sample (bottom quartile: {se(best['out-of-sample']['VPIN'], 'true_positive_bottom', True)}).",
     ], size=14, space=6)
     picture(s, figs["is_oos"], (7.1, 2.4, 5.9, 4.4))
 
-    # 13. E1
+    # 14. E1
     bb = k["btc_buckets"]["50_50"]
+    bse = bb["se"]
     tr = k["btc_trades"]
+    bars_k = k["btc_bars"]
     s = slide_with_title(prs, "Extension 1: is bulk classification right? A ground-truth test", (
         "Upgrade, ~1 min. Binance BTCUSDT data mark the aggressor of every trade, so we know the true buy volume "
-        "that BVC estimates — the paper never could. Same buckets, two classifications. Sources: "
-        "results/extensions/summary.json, btc_bars_bvc_vs_truth.csv, btc_trade_days.csv."))
+        "that BVC estimates — the paper never could. Same buckets, two classifications. ± by month blocks; the "
+        "trade-day ranges are across 5 days. Sources: results/extensions/summary.json, "
+        "btc_bars_bvc_vs_truth.csv, btc_trade_days.csv."))
     picture(s, EXT / "figures" / "e1_btc_vpin_true_vs_bvc.png", (0.4, 2.35, 8.0, 2.75))
     text(s, (0.64, 5.2, 7.8, 1.9), [
-        f"Bars: BVC gets the sign right for **{k['btc_bars']['direction_agreement_min']:.0%}–{k['btc_bars']['direction_agreement_max']:.0%}** of volume.",
-        f"Buckets: BVC inflates |imbalance| **{bb['mean_abs_imbalance_bvc'] / bb['mean_abs_imbalance_true']:.1f}×**; the two VPINs correlate only **{bb['corr_vpin_bvc_true']:.2f}**.",
+        f"Bars: BVC gets the sign right for **{bars_k['direction_agreement']:.1%} ± {bars_k['direction_agreement_se']:.1%}** of volume.",
+        f"Buckets: BVC inflates |imbalance| **{bse['imbalance_inflation']:.1f}×**; the two VPINs correlate only **{bb['corr_vpin_bvc_true']:.2f} ± {bse['corr_vpin_bvc_true']:.2f}**.",
     ], size=14, space=6)
     text(s, (8.7, 2.45, 4.4, 4.6), [
         ("On 5 days with every trade", {"bullet": False, "bold": True, "color": NAVY, "size": 15}),
         f"Tick rule: **{tr['tick_accuracy_min']:.0%}–{tr['tick_accuracy_max']:.0%}** of volume classified right.",
         f"Bucket imbalance vs truth: tick rule **≥ {tr['corr_tick_min']:.2f}**, BVC **{tr['corr_bvc_1min_min']:.2f}–{tr['corr_bvc_1min_max']:.2f}** (1-min bars).",
-        ("Caveat: Binance aggregates the fills of one order, which helps the tick rule.", {"size": 12, "color": MUTED}),
+        ("Ranges are across the 5 days. Caveat: Binance aggregates the fills of one order, which helps the tick rule.", {"size": 12, "color": MUTED}),
         ("The paper's claim that bulk beats trade-by-trade classification does not hold here.", {"bold": True, "color": NAVY}),
     ], size=14, space=8)
 
-    # 14. E3
+    # 15. E3
     s = slide_with_title(prs, "Extension 2: is VPIN more than volatility?", (
-        "Upgrade, ~1 min. Lift = hit rate divided by how often the alarm is on; a signal that is always on has "
-        "lift 1. With true labels VPIN has no positive link to future volatility; with BVC it does, because "
-        "BVC turns price moves into imbalance. Trailing volatility beats both. Andersen and Bondarenko (2014) "
-        "argued this from equity data; we confirm it with ground truth. Sources: btc_signal_comparison.csv, "
-        "regressions.csv."))
+        "Upgrade, ~1 min. One data source (BTC), three signals. Lift = hit rate divided by how often the alarm "
+        "is on; a signal that is always on has lift 1. With true labels VPIN has no positive link to future "
+        "volatility; with BVC it does, because BVC turns price moves into imbalance. Trailing volatility beats "
+        "both. Andersen and Bondarenko (2014) argued this from equity data; we confirm it with ground truth. "
+        "Sources: btc_signal_comparison.csv, regressions.csv."))
     b50 = k["btc_signals"]["50"]
-    df = pd.DataFrame([(sig.replace(" (trailing volatility)", " (trailing volatility)"), f"{r['corr']:.2f}", f"{r['insurance']:.0%}",
-                        f"{r['alarm_rate']:.0%}", f"{r['lift']:.1f}×") for sig, r in b50.items()],
-                      columns=["BTCUSDT, 2020–26 (50 buckets/day, n = 50)", "Corr with next |return|",
+    df = pd.DataFrame([(sig_name, se(r, "corr"), se(r, "insurance", True), f"{r['alarm_rate']:.0%}", se(r, "lift"))
+                       for sig_name, r in b50.items()],
+                      columns=["BTCUSDT 2020–26, 50 buckets/day, n = 50", "Corr with next |return|",
                                "P(top quartile | move > 0.75%)", "Time in top quartile", "Lift"])
-    table(s, df, (0.64, 2.45, 12.05, 1.8), widths=[4.6, 2.0, 2.45, 1.85, 1.15], size=13)
+    table(s, df, (0.64, 2.45, 12.05, 1.8), widths=[4.3, 2.1, 2.45, 1.75, 1.45], size=13)
     reg = [r for r in k["regressions"] if r["market"] == "BTC" and r["choice"] == "(50, 50)" and r["signal"] == "vpin"][0]
-    reg_ive = [r for r in k["regressions"] if r["market"] == "IVE" and r["choice"] == "paper (50, 250)"][1]
+    reg_ive = [r for r in k["regressions"] if r["market"] == "IVE" and r["choice"] == "paper (50, 250)" and r["period"] == "out-of-sample"][0]
     text(s, (0.64, 4.55, 12.0, 2.5), [
-        f"VPIN from **true labels** is negatively related to the next move ({b50['VPIN (true labels)']['corr']:.2f}); bulk-classified VPIN is positive ({b50['VPIN (bulk classified)']['corr']:.2f}); **trailing volatility wins** ({b50['RV (trailing volatility)']['corr']:.2f}).",
-        f"BVC imbalance moves with the bucket's own |return| ({bb['corr_abs_imbalance_with_same_bucket_abs_return_bvc']:.2f} vs {bb['corr_abs_imbalance_with_same_bucket_abs_return_true']:.2f} for the truth): BVC builds volatility into VPIN.",
-        f"Regression with volatility and trade-intensity controls (Newey–West): VPIN adds ΔR² = **{reg['delta_r2']:.4f}** on BTC, **{reg_ive['delta_r2']:.4f}** on IVE out of sample.",
+        "VPIN from **true labels** is negatively related to the next move; bulk-classified VPIN is positive; **trailing volatility wins**.",
+        f"BVC imbalance moves with the bucket's own |return| ({bb['corr_abs_imbalance_with_same_bucket_abs_return_bvc']:.2f} ± {bse['corr_abs_imbalance_with_same_bucket_abs_return_bvc']:.2f} vs {bb['corr_abs_imbalance_with_same_bucket_abs_return_true']:.2f} ± {bse['corr_abs_imbalance_with_same_bucket_abs_return_true']:.2f} for the truth): BVC builds volatility into VPIN.",
+        f"Regression with volatility and trade-intensity controls: VPIN adds ΔR² = **{reg['delta_r2']:.4f} ± {reg['delta_r2_se']:.4f}** on BTC, **{reg_ive['delta_r2']:.4f} ± {reg_ive['delta_r2_se']:.4f}** on IVE out of sample.",
     ], size=14, space=8)
 
-    # 15. E2
+    # 16. E2
     s = slide_with_title(prs, "Extension 3: real-time VPIN out of sample, IVE 2011–2026", (
-        "Upgrade, ~1 min. Fifteen years after the paper. Year by year, the correlation of VPIN with the next "
-        "move is small and unstable, trailing volatility is higher almost every year, and the share of time the "
-        "VPIN alarm is on drifts a lot — its CDF from the past does not fit the future. Source: "
+        "Upgrade, ~1 min. Fifteen years after the paper, one data source. Year by year, VPIN's correlation with "
+        "the next move is small and unstable, trailing volatility is higher almost every year, and the share of "
+        "time the VPIN alarm is on drifts a lot — a CDF from the past does not fit the future. Source: "
         "results/extensions/ive_by_year.csv, ive_oos_comparison.csv."))
     picture(s, EXT / "figures" / "e2_ive_by_year.png", (0.4, 2.35, 12.5, 3.9))
     p250 = o["paper (50, 250)"]["out-of-sample"]
     text(s, (0.64, 6.25, 12.0, 0.9), [
-        f"Paper's (50, 250), out of sample: corr VPIN **{p250['VPIN']['corr']:.2f}** vs trailing volatility **{p250['RV (trailing volatility)']['corr']:.2f}**; "
-        f"lift **{p250['VPIN']['lift']:.1f}×** vs **{p250['RV (trailing volatility)']['lift']:.1f}×**.",
+        f"Paper's (50, 250), 2011–26: corr VPIN **{se(p250['VPIN'], 'corr')}** vs trailing volatility **{se(p250['RV (trailing volatility)'], 'corr')}**; "
+        f"lift **{se(p250['VPIN'], 'lift')}** vs **{se(p250['RV (trailing volatility)'], 'lift')}**.",
     ], size=14)
 
-    # 16. E4
+    # 17. E4
     ev = pd.DataFrame(k["events"])
-    share = {m: ev[ev["market"] == m].iloc[0] for m in ("IVE", "BTC")}
-    hits = lambda m, col: int(sum(v is True or v == 1.0 for v in ev.loc[ev["market"] == m, col]))
-    n_ive, n_btc = int((ev["market"] == "IVE").sum()), int((ev["market"] == "BTC").sum())
+    al = pd.DataFrame(k["alarms"])
     s = slide_with_title(prs, "Extension 4: crashes after the paper", (
         "Upgrade, ~45 s. Was the real-time alarm (CDF >= 0.9) on when each day's largest one-hour fall began? "
-        "Compare each hit count with how often that alarm is on overall. On IVE, VPIN's alarm was on at every "
-        "fall — the extension result most favourable to VPIN — but these are few events, several inside weeks of turmoil "
-        "(Aug 2011, Mar 2020), when trailing volatility was also high. On BTC no signal was reliable. "
-        "Source: results/extensions/crash_events.csv."))
+        "Compare hits with how often the alarm is on overall. The binomial p-value assumes falls are "
+        "independent draws, which they are not (several fall inside weeks of turmoil, e.g. Aug 2011, Mar 2020), "
+        "so it is a rough guide. On IVE VPIN's alarm was on at every fall — the extension result most "
+        "favourable to VPIN. Source: results/extensions/crash_events.csv, crash_alarm_summary.csv."))
     onoff = lambda v: "–" if v is None or (isinstance(v, float) and np.isnan(v)) else ("on" if v else "off")
     df = pd.DataFrame([(r["market"], r["day"], f"{r['drop_1h']:.1%}", onoff(r["vpin_alarm_on"]),
                         onoff(r.get("vpin_true_alarm_on")), onoff(r["rv_alarm_on"])) for r in ev.to_dict(orient="records")],
                       columns=["Market", "Day", "Largest 1-hour fall", "VPIN alarm", "VPIN alarm, true labels", "Volatility alarm"])
     fills = {(i, j): (GREEN if df.iat[i, j] == "on" else MUTED) for i in range(len(df)) for j in (3, 4, 5) if df.iat[i, j] != "–"}
     table(s, df, (0.64, 2.4, 7.6, 3.9), widths=[1.0, 1.5, 1.5, 1.15, 1.35, 1.1], size=13, fills=fills)
-    text(s, (8.6, 2.4, 4.5, 4.6), [
-        ("Hits vs how often the alarm is on", {"bullet": False, "bold": True, "color": NAVY, "size": 15}),
-        f"IVE, VPIN: on at **{hits('IVE', 'vpin_alarm_on')} of {n_ive}** falls; on **{share['IVE']['vpin_alarm_share']:.0%}** of all the time.",
-        f"IVE, volatility: **{hits('IVE', 'rv_alarm_on')} of {n_ive}**; on {share['IVE']['rv_alarm_share']:.0%} of the time.",
-        f"BTC: VPIN **{hits('BTC', 'vpin_alarm_on')} of {n_btc}**, true-label VPIN **{hits('BTC', 'vpin_true_alarm_on')} of {n_btc}**, volatility **{hits('BTC', 'rv_alarm_on')} of {n_btc}**.",
-        ("Few events: suggestive on IVE, nothing on BTC.", {"bold": True, "color": NAVY}),
-    ], size=14, space=9)
+    names = {"vpin": "VPIN", "vpin_true": "VPIN, true labels", "rv": "Volatility"}
+    al_df = pd.DataFrame([(a["market"], names[a["signal"]], f"{a['hits']} of {a['falls']}", f"{a['alarm_share']:.0%}",
+                           f"{a['p_value_binomial']:.3f}" if a["p_value_binomial"] >= 0.001 else "< 0.001")
+                          for a in al.to_dict(orient="records")],
+                         columns=["", "Alarm", "Hits", "On overall", "p"])
+    table(s, al_df, (8.5, 2.4, 4.45, 2.6), widths=[0.6, 1.5, 0.8, 0.8, 0.75], size=11)
+    text(s, (8.5, 5.2, 4.6, 1.8), [
+        ("p: chance of that many hits if the alarm were on at random with its overall rate (falls treated as independent).", {"size": 11, "color": MUTED}),
+        ("IVE: VPIN on at every fall. BTC: nothing reliable. Few events.", {"bold": True, "color": NAVY, "size": 13}),
+    ], size=12, space=6)
 
-    # 17. Critique and next steps
+    # 18. Critique and next steps
     s = slide_with_title(prs, "Critique and next steps", (
         "Critique ~1 min, next steps ~2 min. Keep it to what we tested. The authors disclose a patent on VPIN "
         "and a financial interest in it (title page)."))
@@ -551,6 +598,7 @@ def build(paper_pdf: Path, out: Path):
         "Whole-sample CDF and grid-searched parameters: **look-ahead and selection** with no out-of-sample test.",
         "Main evidence is **one event** (6 May 2010); on IVE the warning depends on bar size and classifier.",
         "No baseline: the paper never compares VPIN with **plain volatility**, which wins in our tests.",
+        "Its **±** treats overlapping buckets as independent: far too narrow.",
         "The authors hold a **patent** on VPIN and disclose a financial interest.",
     ], size=14, space=7)
     text(s, (6.9, 2.4, 6.2, 4.6), [
@@ -561,7 +609,7 @@ def build(paper_pdf: Path, out: Path):
         "Combine with **HAR volatility forecasts** and test VPIN's incremental value out of sample.",
     ], size=14, space=7)
 
-    # 18. Repository
+    # 19. Repository
     s = slide_with_title(prs, "Repository: how to run it", (
         "Code is ours, written from scratch. One command per stage; every number in the README and these slides "
         "is read from results/. Raw data are downloaded by scripts, not committed."))
@@ -587,7 +635,7 @@ def build(paper_pdf: Path, out: Path):
         (f"Free data: {data['ticks']:,} IVE trades in the paper's period; BTCUSDT 2020–2026.", {"bullet": False, "size": 12, "color": MUTED}),
     ], size=12)
 
-    # 19. Final
+    # 20. Final
     prs.slides.add_slide(layout(prs, "Final_1"))
     out.parent.mkdir(parents=True, exist_ok=True)
     prs.save(out)

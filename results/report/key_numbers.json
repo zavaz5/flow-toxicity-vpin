@@ -29,27 +29,131 @@
     "ours": 0.037037979610186296,
     "paper": 0.06521739130434782
   },
-  "table1": {
-    "wins_clean": {
-      "50": [
-        3,
-        4
-      ],
-      "100": [
-        4,
-        4
-      ]
+  "table1_boot": {
+    "50": {
+      "Skew": {
+        "Chrono time": -0.1739904367942278,
+        "Chrono \u00b1": 0.0731366303810053,
+        "Volume time": -0.1333071776905927,
+        "Volume \u00b1": 0.0561497000712491,
+        "P(volume < clock)": 0.711
+      },
+      "Kurt": {
+        "Chrono time": 13.120272230000902,
+        "Chrono \u00b1": 3.9644223603412425,
+        "Volume time": 9.04539291083598,
+        "Volume \u00b1": 1.8130166059537487,
+        "P(volume < clock)": 0.947
+      },
+      "Min": {
+        "Chrono time": -15.151364919879114,
+        "Chrono \u00b1": 3.0969620351974307,
+        "Volume time": -10.893402525355024,
+        "Volume \u00b1": 1.9028872722117516,
+        "P(volume < clock)": 1.0
+      },
+      "Max": {
+        "Chrono time": 13.07667061641448,
+        "Chrono \u00b1": 2.2891550825919524,
+        "Volume time": 9.864894101232927,
+        "Volume \u00b1": 1.5054223991241378,
+        "P(volume < clock)": 0.977
+      },
+      "L-B*": {
+        "Chrono time": 23.12850489324453,
+        "Chrono \u00b1": 32.337719380925115,
+        "Volume time": 43.0270404979262,
+        "Volume \u00b1": 25.227160666822037,
+        "P(volume < clock)": 0.313
+      },
+      "White*": {
+        "Chrono time": 0.2825367127822517,
+        "Chrono \u00b1": 0.1022362716519554,
+        "Volume time": 0.1553710315506385,
+        "Volume \u00b1": 0.0587603259369364,
+        "P(volume < clock)": 0.995
+      },
+      "J-B*": {
+        "Chrono time": 4.27254169573795,
+        "Chrono \u00b1": 3.106383349610692,
+        "Volume time": 1.5257441108700514,
+        "Volume \u00b1": 0.8919910522194295,
+        "P(volume < clock)": 0.947
+      },
+      "T": {
+        "Chrono time": 23151.0,
+        "Chrono \u00b1": 0.0,
+        "Volume time": 23152.0,
+        "Volume \u00b1": 0.0,
+        "P(volume < clock)": NaN
+      }
     },
-    "wins_raw": {
-      "50": [
-        3,
-        4
-      ],
-      "100": [
-        3,
-        4
-      ]
+    "100": {
+      "Skew": {
+        "Chrono time": -0.2895797313549815,
+        "Chrono \u00b1": 0.101649887899656,
+        "Volume time": -0.1972943720029186,
+        "Volume \u00b1": 0.0669238970886474,
+        "P(volume < clock)": 0.906
+      },
+      "Kurt": {
+        "Chrono time": 18.331529026460043,
+        "Chrono \u00b1": 6.9391117067810955,
+        "Volume time": 8.633867435617484,
+        "Volume \u00b1": 0.8674226299337164,
+        "P(volume < clock)": 0.875
+      },
+      "Min": {
+        "Chrono time": -21.015549598319467,
+        "Chrono \u00b1": 4.547246324911989,
+        "Volume time": -11.008107663194028,
+        "Volume \u00b1": 1.1473355500621945,
+        "P(volume < clock)": 0.985
+      },
+      "Max": {
+        "Chrono time": 16.187739978030862,
+        "Chrono \u00b1": 2.916952796450112,
+        "Volume time": 8.332097445771485,
+        "Volume \u00b1": 0.5122858992784255,
+        "P(volume < clock)": 0.965
+      },
+      "L-B*": {
+        "Chrono time": 95.600491314394,
+        "Chrono \u00b1": 49.55465970280241,
+        "Volume time": 50.058843498555056,
+        "Volume \u00b1": 18.971183214823164,
+        "P(volume < clock)": 0.976
+      },
+      "White*": {
+        "Chrono time": 0.2673789406092072,
+        "Chrono \u00b1": 0.0833358316164957,
+        "Volume time": 0.0608975741994608,
+        "Volume \u00b1": 0.0079138845933877,
+        "P(volume < clock)": 0.993
+      },
+      "J-B*": {
+        "Chrono time": 9.807966998851388,
+        "Chrono \u00b1": 8.10007202692707,
+        "Volume time": 1.329006773291968,
+        "Volume \u00b1": 0.4251731841375887,
+        "P(volume < clock)": 0.877
+      },
+      "T": {
+        "Chrono time": 46278.0,
+        "Chrono \u00b1": 0.0,
+        "Volume time": 46283.0,
+        "Volume \u00b1": 0.0,
+        "P(volume < clock)": NaN
+      }
     }
+  },
+  "table1_significant": {
+    "50": 1,
+    "100": 2
+  },
+  "table1_lower": {
+    "50": 3,
+    "100": 4
   },
   "table2": {
     "ours": {
@@ -100,7 +204,117 @@
       0,
       9
     ],
-    "top_quartile_stays_10_350": 67
+    "top_quartile_stays_10_350": 67,
+    "uncertainty": {
+      "50_250": {
+        "corr": {
+          "value": 0.07784182943166353,
+          "se": 0.04749784505148885,
+          "lo": 0.04208534119317467,
+          "hi": 0.2215114361288036
+        },
+        "insurance": {
+          "value": 0.5103448275862069,
+          "se": 0.12883755747085698,
+          "lo": 0.19180871212121212,
+          "hi": 0.7070050282840981
+        },
+        "alarm": {
+          "value": 0.25,
+          "se": 0.05789774268146247,
+          "lo": 0.14077659375779822,
+          "hi": 0.3717014479948554
+        },
+        "lift": {
+          "value": 2.0413793103448277,
+          "se": 0.3375983160745418,
+          "lo": 1.2036617261513958,
+          "hi": 2.669881917074979
+        },
+        "bottom_small": {
+          "value": 0.9610212765957447,
+          "se": 0.005418396445223506,
+          "lo": 0.9503584659859677,
+          "hi": 0.9717666250318815
+        },
+        "tp_top": {
+          "value": 0.336,
+          "se": 0.04346383860532028,
+          "lo": 0.2583948635634029,
+          "hi": 0.4255493547261946
+        },
+        "tp_bottom": {
+          "value": 0.2255892255892256,
+          "se": 0.03461795812076951,
+          "lo": 0.1689708885281952,
+          "hi": 0.30306324110671934
+        },
+        "tp_diff": {
+          "value": 0.11041077441077443,
+          "se": 0.0443871487659068,
+          "lo": 0.025360103090791494,
+          "hi": 0.1985355178752321
+        },
+        "n_obs": 23500,
+        "big_moves": 145
+      },
+      "10_350": {
+        "corr": {
+          "value": 0.007167775279063038,
+          "se": 0.057435402618665046,
+          "lo": -0.05733950646284645,
+          "hi": 0.18309833903985884
+        },
+        "insurance": {
+          "value": 0.4175257731958763,
+          "se": 0.12426671597825414,
+          "lo": 0.16278343023255815,
+          "hi": 0.625077479338843
+        },
+        "alarm": {
+          "value": 0.25,
+          "se": 0.07183740300353768,
+          "lo": 0.11831950272042491,
+          "hi": 0.396480199789966
+        },
+        "lift": {
+          "value": 1.6701030927835052,
+          "se": 0.5057522820773819,
+          "lo": 0.94942808567908,
+          "hi": 2.774887633944689
+        },
+        "bottom_small": {
+          "value": 0.6681818181818182,
+          "se": 0.029404797870624885,
+          "lo": 0.611098233995585,
+          "hi": 0.7230433756081285
+        },
+        "tp_top": {
+          "value": 0.5970149253731343,
+          "se": 0.12063421523162937,
+          "lo": 0.3684210526315789,
+          "hi": 0.8478425559947299
+        },
+        "tp_bottom": {
+          "value": 0.43859649122807015,
+          "se": 0.06569191199447409,
+          "lo": 0.3043148880105402,
+          "hi": 0.5510746851932261
+        },
+        "tp_diff": {
+          "value": 0.15841843414506412,
+          "se": 0.13121066057127106,
+          "lo": -0.0697083482515813,
+          "hi": 0.43419276801629747
+        },
+        "n_obs": 4400,
+        "big_moves": 194
+      }
+    },
+    "corr_50_250_fisher_ci_iid": [
+      0.06512089242378524,
+      0.09053747018026465
+    ]
   },
   "ive_oos": {
     "paper (50, 250)": {
@@ -111,16 +325,22 @@
           "sample_length": 250,
           "period": "in-sample",
           "signal": "VPIN",
-          "corr": 0.1066525205818602,
           "n_obs": 18486,
-          "insurance": 0.4628099173553719,
-          "alarm_rate": 0.1883046629882073,
-          "lift": 2.457771942611722,
           "big_moves": 121,
+          "corr": 0.10665252058186,
+          "corr_se": 0.0562349756642995,
+          "insurance": 0.4628099173553719,
+          "insurance_se": 0.1435915350811333,
+          "alarm_rate": 0.1883046629882073,
+          "alarm_rate_se": 0.0736090089751355,
+          "lift": 2.457771942611722,
+          "lift_se": 0.7459251322732452,
           "true_positive_top": 0.2727272727272727,
+          "true_positive_top_se": 0.0882679187824795,
           "true_positive_bottom": 0.2733485193621868,
-          "mean_stay_top": 29.14876033057851,
-          "mean_stay_bottom": 23.273348519362187
+          "true_positive_bottom_se": 0.0385927640752195,
+          "true_positive_diff": -0.000621246634914,
+          "true_positive_diff_se": 0.0998734480109812
         },
         "RV (trailing volatility)": {
           "choice": "paper (50, 250)",
@@ -128,16 +348,22 @@
           "sample_length": 250,
           "period": "in-sample",
           "signal": "RV (trailing volatility)",
-          "corr": 0.1253850250406271,
           "n_obs": 18485,
-          "insurance": 0.5454545454545454,
-          "alarm_rate": 0.2468487963213416,
-          "lift": 2.2096706712091327,
           "big_moves": 121,
+          "corr": 0.1253850250406175,
+          "corr_se": 0.06508629625671,
+          "insurance": 0.5454545454545454,
+          "insurance_se": 0.1668660381239878,
+          "alarm_rate": 0.2468487963213416,
+          "alarm_rate_se": 0.0914575267115262,
+          "lift": 2.2096706712091327,
+          "lift_se": 0.4759837465940396,
           "true_positive_top": 0.337037037037037,
+          "true_positive_top_se": 0.0481287134213317,
           "true_positive_bottom": 0.2112211221122112,
-          "mean_stay_top": 19.751851851851853,
-          "mean_stay_bottom": 21.848184818481847
+          "true_positive_bottom_se": 0.0296746196276165,
+          "true_positive_diff": 0.1258159149248258,
+          "true_positive_diff_se": 0.0541438345867084
         }
       },
       "out-of-sample": {
@@ -147,16 +373,22 @@
           "sample_length": 250,
           "period": "out-of-sample",
           "signal": "VPIN",
-          "corr": 0.0920323550240928,
           "n_obs": 193474,
-          "insurance": 0.5561497326203209,
-          "alarm_rate": 0.3548538821753827,
-          "lift": 1.5672640502364572,
           "big_moves": 748,
+          "corr": 0.092032355024092,
+          "corr_se": 0.0313586343424705,
+          "insurance": 0.5561497326203209,
+          "insurance_se": 0.0869740830176636,
+          "alarm_rate": 0.3548538821753827,
+          "alarm_rate_se": 0.0302718408411898,
+          "lift": 1.5672640502364572,
+          "lift_se": 0.198889358713836,
           "true_positive_top": 0.2726874177992108,
+          "true_positive_top_se": 0.0163828377682781,
           "true_positive_bottom": 0.2344582593250444,
-          "mean_stay_top": 30.07847435335379,
-          "mean_stay_bottom": 24.66607460035524
+          "true_positive_bottom_se": 0.0166056001675604,
+          "true_positive_diff": 0.0382291584741664,
+          "true_positive_diff_se": 0.0223600121220026
         },
         "RV (trailing volatility)": {
           "choice": "paper (50, 250)",
@@ -164,16 +396,22 @@
           "sample_length": 250,
           "period": "out-of-sample",
           "signal": "RV (trailing volatility)",
-          "corr": 0.242264718542513,
           "n_obs": 193474,
-          "insurance": 0.6176470588235294,
-          "alarm_rate": 0.2234873936549614,
-          "lift": 2.7636773990800787,
           "big_moves": 748,
+          "corr": 0.2422647185425159,
+          "corr_se": 0.0180344145854796,
+          "insurance": 0.6176470588235294,
+          "insurance_se": 0.0730494506144763,
+          "alarm_rate": 0.2234873936549614,
+          "alarm_rate_se": 0.0273939644087572,
+          "lift": 2.7636773990800787,
+          "lift_se": 0.281184089889089,
           "true_positive_top": 0.3621951219512195,
+          "true_positive_top_se": 0.0160278051919931,
           "true_positive_bottom": 0.1431980906921241,
-          "mean_stay_top": 25.896341463414632,
-          "mean_stay_bottom": 25.801909307875896
+          "true_positive_bottom_se": 0.0082635454017195,
+          "true_positive_diff": 0.2189970312590954,
+          "true_positive_diff_se": 0.0183954997456547
         }
       }
     },
@@ -185,16 +423,22 @@
           "sample_length": 350,
           "period": "in-sample",
           "signal": "VPIN",
-          "corr": 0.2826129978825637,
           "n_obs": 3397,
-          "insurance": 0.3648648648648648,
-          "alarm_rate": 0.1371798645863997,
-          "lift": 2.6597552488110425,
           "big_moves": 148,
+          "corr": 0.2826129978825668,
+          "corr_se": 0.0768793989159276,
+          "insurance": 0.3648648648648648,
+          "insurance_se": 0.1793378563792474,
+          "alarm_rate": 0.1371798645863997,
+          "alarm_rate_se": 0.0696282535607391,
+          "lift": 2.6597552488110425,
+          "lift_se": 1.0435290704040747,
           "true_positive_top": 0.5,
+          "true_positive_top_se": 0.1894650497016425,
           "true_positive_bottom": 0.4154929577464789,
-          "mean_stay_top": 30.65,
-          "mean_stay_bottom": 13.161971830985916
+          "true_positive_bottom_se": 0.0454390929261767,
+          "true_positive_diff": 0.0845070422535211,
+          "true_positive_diff_se": 0.1855736741045898
         },
         "RV (trailing volatility)": {
           "choice": "paper Table 5 (10, 350)",
@@ -202,16 +446,22 @@
           "sample_length": 350,
           "period": "in-sample",
           "signal": "RV (trailing volatility)",
-          "corr": 0.2717316975695008,
           "n_obs": 3396,
-          "insurance": 0.4932432432432432,
-          "alarm_rate": 0.2346878680800942,
-          "lift": 2.10169893858727,
           "big_moves": 148,
+          "corr": 0.2717316975695172,
+          "corr_se": 0.0561906799293254,
+          "insurance": 0.4932432432432432,
+          "insurance_se": 0.1732428768683358,
+          "alarm_rate": 0.2346878680800942,
+          "alarm_rate_se": 0.0990855915651451,
+          "lift": 2.10169893858727,
+          "lift_se": 0.6867232620284435,
           "true_positive_top": 0.4285714285714285,
+          "true_positive_top_se": 0.1049007687909823,
           "true_positive_bottom": 0.4507042253521127,
-          "mean_stay_top": 23.244897959183675,
-          "mean_stay_bottom": 18.056338028169016
+          "true_positive_bottom_se": 0.0600248485015732,
+          "true_positive_diff": -0.0221327967806841,
+          "true_positive_diff_se": 0.1208636636183288
         }
       },
       "out-of-sample": {
@@ -221,16 +471,22 @@
           "sample_length": 350,
           "period": "out-of-sample",
           "signal": "VPIN",
-          "corr": 0.0965746213967089,
           "n_obs": 38695,
-          "insurance": 0.5487804878048781,
-          "alarm_rate": 0.410027135288797,
-          "lift": 1.3384004144466,
           "big_moves": 1148,
+          "corr": 0.096574621396706,
+          "corr_se": 0.0454407368376948,
+          "insurance": 0.5487804878048781,
+          "insurance_se": 0.0770401543720184,
+          "alarm_rate": 0.410027135288797,
+          "alarm_rate_se": 0.0358526657608586,
+          "lift": 1.3384004144466,
+          "lift_se": 0.1517115905331332,
           "true_positive_top": 0.4852398523985239,
+          "true_positive_top_se": 0.0295426595033891,
           "true_positive_bottom": 0.4504950495049505,
-          "mean_stay_top": 29.001845018450183,
-          "mean_stay_bottom": 27.935643564356436
+          "true_positive_bottom_se": 0.0381726214549709,
+          "true_positive_diff": 0.0347448028935734,
+          "true_positive_diff_se": 0.0494139455863951
         },
         "RV (trailing volatility)": {
           "choice": "paper Table 5 (10, 350)",
@@ -238,16 +494,22 @@
           "sample_length": 350,
           "period": "out-of-sample",
           "signal": "RV (trailing volatility)",
-          "corr": 0.2756302228908742,
           "n_obs": 38695,
-          "insurance": 0.6184668989547039,
-          "alarm_rate": 0.2465951673342809,
-          "lift": 2.5080252206091247,
           "big_moves": 1148,
+          "corr": 0.2756302228909166,
+          "corr_se": 0.0257081418403669,
+          "insurance": 0.6184668989547039,
+          "insurance_se": 0.0644043915264158,
+          "alarm_rate": 0.2465951673342809,
+          "alarm_rate_se": 0.0332773946535405,
+          "lift": 2.5080252206091247,
+          "lift_se": 0.2266143654571817,
           "true_positive_top": 0.6205533596837944,
+          "true_positive_top_se": 0.0325303847922129,
           "true_positive_bottom": 0.4311926605504587,
-          "mean_stay_top": 36.36363636363637,
-          "mean_stay_bottom": 26.181192660550455
+          "true_positive_bottom_se": 0.0276508163151245,
+          "true_positive_diff": 0.1893606991333357,
+          "true_positive_diff_se": 0.0430856150394319
         }
       }
     },
@@ -259,16 +521,22 @@
           "sample_length": 450,
           "period": "in-sample",
           "signal": "VPIN",
-          "corr": 0.3227814841441826,
           "n_obs": 3297,
-          "insurance": 0.3356164383561644,
-          "alarm_rate": 0.100090991810737,
-          "lift": 3.353113325031133,
           "big_moves": 146,
+          "corr": 0.3227814841441789,
+          "corr_se": 0.0698080442752788,
+          "insurance": 0.3356164383561644,
+          "insurance_se": 0.1873375800260692,
+          "alarm_rate": 0.100090991810737,
+          "alarm_rate_se": 0.066110460095265,
+          "lift": 3.353113325031133,
+          "lift_se": 1.310087220475805,
           "true_positive_top": 0.7142857142857143,
+          "true_positive_top_se": 0.2240188329796662,
           "true_positive_bottom": 0.4414414414414414,
-          "mean_stay_top": 70.85714285714286,
-          "mean_stay_bottom": 17.846846846846848
+          "true_positive_bottom_se": 0.0577345975521297,
+          "true_positive_diff": 0.2728442728442729,
+          "true_positive_diff_se": 0.2305822603831216
         },
         "RV (trailing volatility)": {
           "choice": "best in-sample corr",
@@ -276,16 +544,22 @@
           "sample_length": 450,
           "period": "in-sample",
           "signal": "RV (trailing volatility)",
-          "corr": 0.2684132248954651,
           "n_obs": 3296,
-          "insurance": 0.4931506849315068,
-          "alarm_rate": 0.1926577669902912,
-          "lift": 2.5597238701326717,
           "big_moves": 146,
+          "corr": 0.2684132248954649,
+          "corr_se": 0.0576358582734662,
+          "insurance": 0.4931506849315068,
+          "insurance_se": 0.173156052622511,
+          "alarm_rate": 0.1926577669902912,
+          "alarm_rate_se": 0.0824505646183269,
+          "lift": 2.5597238701326717,
+          "lift_se": 0.6565602049304067,
           "true_positive_top": 0.75,
+          "true_positive_top_se": 0.0761554488775397,
           "true_positive_bottom": 0.3647058823529411,
-          "mean_stay_top": 37.17857142857143,
-          "mean_stay_bottom": 15.423529411764706
+          "true_positive_bottom_se": 0.082224275374495,
+          "true_positive_diff": 0.3852941176470588,
+          "true_positive_diff_se": 0.1131470542701952
         }
       },
       "out-of-sample": {
@@ -295,16 +569,22 @@
           "sample_length": 450,
           "period": "out-of-sample",
           "signal": "VPIN",
-          "corr": 0.0934907286199978,
           "n_obs": 38695,
-          "insurance": 0.5566202090592335,
-          "alarm_rate": 0.4207003488822845,
-          "lift": 1.3230799797006598,
           "big_moves": 1148,
+          "corr": 0.0934907286199956,
+          "corr_se": 0.0448009765653496,
+          "insurance": 0.5566202090592335,
+          "insurance_se": 0.076425997967558,
+          "alarm_rate": 0.4207003488822845,
+          "alarm_rate_se": 0.037111055691536,
+          "lift": 1.3230799797006598,
+          "lift_se": 0.1452078025654995,
           "true_positive_top": 0.5214592274678111,
+          "true_positive_top_se": 0.0285759019590568,
           "true_positive_bottom": 0.5683453237410072,
-          "mean_stay_top": 34.5793991416309,
-          "mean_stay_bottom": 38.58273381294964
+          "true_positive_bottom_se": 0.057830808272683,
+          "true_positive_diff": -0.046886096273196,
+          "true_positive_diff_se": 0.0655100956928428
         },
         "RV (trailing volatility)": {
           "choice": "best in-sample corr",
@@ -312,16 +592,22 @@
           "sample_length": 450,
           "period": "out-of-sample",
           "signal": "RV (trailing volatility)",
-          "corr": 0.2634797321082067,
           "n_obs": 38695,
-          "insurance": 0.6193379790940766,
-          "alarm_rate": 0.2483008140586639,
-          "lift": 2.49430506880155,
           "big_moves": 1148,
+          "corr": 0.2634797321081809,
+          "corr_se": 0.0243500807162687,
+          "insurance": 0.6193379790940766,
+          "insurance_se": 0.0639239429208677,
+          "alarm_rate": 0.2483008140586639,
+          "alarm_rate_se": 0.0336329911042385,
+          "lift": 2.49430506880155,
+          "lift_se": 0.2275208673184026,
           "true_positive_top": 0.6639344262295082,
+          "true_positive_top_se": 0.0368533132818113,
           "true_positive_bottom": 0.4373177842565597,
-          "mean_stay_top": 37.71311475409836,
-          "mean_stay_bottom": 33.2332361516035
+          "true_positive_bottom_se": 0.0302035144230976,
+          "true_positive_diff": 0.2266166419729484,
+          "true_positive_diff_se": 0.0483036769117907
         }
       }
     },
@@ -333,16 +619,22 @@
           "sample_length": 500,
           "period": "in-sample",
           "signal": "VPIN",
-          "corr": 0.1071142701509329,
           "n_obs": 6994,
-          "insurance": 0.4758620689655172,
-          "alarm_rate": 0.1672862453531598,
-          "lift": 2.844597701149425,
           "big_moves": 145,
+          "corr": 0.1071142701509324,
+          "corr_se": 0.0815029102275583,
+          "insurance": 0.4758620689655172,
+          "insurance_se": 0.1696500420090926,
+          "alarm_rate": 0.1672862453531598,
+          "alarm_rate_se": 0.0781703687094411,
+          "lift": 2.844597701149425,
+          "lift_se": 0.8591414267258669,
           "true_positive_top": 0.9166666666666666,
+          "true_positive_top_se": 0.0535037659560694,
           "true_positive_bottom": 0.3782051282051282,
-          "mean_stay_top": 122.83333333333331,
-          "mean_stay_bottom": 24.93589743589743
+          "true_positive_bottom_se": 0.0492134813006435,
+          "true_positive_diff": 0.5384615384615384,
+          "true_positive_diff_se": 0.0689153344568461
         },
         "RV (trailing volatility)": {
           "choice": "best in-sample true positive",
@@ -350,16 +642,22 @@
           "sample_length": 500,
           "period": "in-sample",
           "signal": "RV (trailing volatility)",
-          "corr": 0.0807448644997664,
           "n_obs": 6993,
-          "insurance": 0.4827586206896552,
-          "alarm_rate": 0.1921921921921922,
-          "lift": 2.511853448275862,
           "big_moves": 145,
+          "corr": 0.0807448644997639,
+          "corr_se": 0.0891295839717566,
+          "insurance": 0.4827586206896552,
+          "insurance_se": 0.1654869066118285,
+          "alarm_rate": 0.1921921921921922,
+          "alarm_rate_se": 0.0838536975104806,
+          "lift": 2.511853448275862,
+          "lift_se": 0.7479349376632582,
           "true_positive_top": 0.5,
+          "true_positive_top_se": 0.0540054890693816,
           "true_positive_bottom": 0.4,
-          "mean_stay_top": 37.214285714285715,
-          "mean_stay_bottom": 26.7
+          "true_positive_bottom_se": 0.0473956272416448,
+          "true_positive_diff": 0.0999999999999999,
+          "true_positive_diff_se": 0.0724443689308136
         }
       },
       "out-of-sample": {
@@ -369,16 +667,22 @@
           "sample_length": 500,
           "period": "out-of-sample",
           "signal": "VPIN",
-          "corr": 0.0976809487738874,
           "n_obs": 77390,
-          "insurance": 0.5552178318135765,
-          "alarm_rate": 0.3921695309471508,
-          "lift": 1.4157597365420984,
           "big_moves": 987,
+          "corr": 0.0976809487738813,
+          "corr_se": 0.0402979301785892,
+          "insurance": 0.5552178318135765,
+          "insurance_se": 0.0840872588351879,
+          "alarm_rate": 0.3921695309471508,
+          "alarm_rate_se": 0.0355972041268158,
+          "lift": 1.4157597365420984,
+          "lift_se": 0.1760983444473506,
           "true_positive_top": 0.4464023494860499,
+          "true_positive_top_se": 0.0250117297469731,
           "true_positive_bottom": 0.4661654135338345,
-          "mean_stay_top": 44.12187958883994,
-          "mean_stay_bottom": 41.432330827067666
+          "true_positive_bottom_se": 0.0361096018581437,
+          "true_positive_diff": -0.0197630640477846,
+          "true_positive_diff_se": 0.0423401286552004
         },
         "RV (trailing volatility)": {
           "choice": "best in-sample true positive",
@@ -386,16 +690,22 @@
           "sample_length": 500,
           "period": "out-of-sample",
           "signal": "RV (trailing volatility)",
-          "corr": 0.2567751610275792,
           "n_obs": 77390,
-          "insurance": 0.6423505572441742,
-          "alarm_rate": 0.2405220312701899,
-          "lift": 2.6706516399015063,
           "big_moves": 987,
+          "corr": 0.256775161027592,
+          "corr_se": 0.022629801071214,
+          "insurance": 0.6423505572441742,
+          "insurance_se": 0.0668497805985293,
+          "alarm_rate": 0.2405220312701899,
+          "alarm_rate_se": 0.0326656579924057,
+          "lift": 2.6706516399015063,
+          "lift_se": 0.2599020613781656,
           "true_positive_top": 0.5894428152492669,
+          "true_positive_top_se": 0.0321511261323456,
           "true_positive_bottom": 0.4146341463414634,
-          "mean_stay_top": 53.94721407624633,
-          "mean_stay_bottom": 43.129455909943715
+          "true_positive_bottom_se": 0.023401024774217,
+          "true_positive_diff": 0.1748086689078035,
+          "true_positive_diff_se": 0.0387711987845382
         }
       }
     }
@@ -424,46 +734,64 @@
         "buckets_per_day": 50,
         "sample_length": 50,
         "signal": "VPIN (bulk classified)",
-        "corr": 0.1273417765623485,
         "n_obs": 117141,
-        "insurance": 0.4061879377025191,
-        "alarm_rate": 0.2659871436986196,
-        "lift": 1.5270961297390973,
         "big_moves": 9567,
+        "corr": 0.1273417765623517,
+        "corr_se": 0.0203177753080036,
+        "insurance": 0.4061879377025191,
+        "insurance_se": 0.0330805110818583,
+        "alarm_rate": 0.2659871436986196,
+        "alarm_rate_se": 0.0187417297071345,
+        "lift": 1.5270961297390973,
+        "lift_se": 0.0757053442995382,
         "true_positive_top": 0.5023640661938534,
+        "true_positive_top_se": 0.0183549598335141,
         "true_positive_bottom": 0.3506813569150478,
-        "mean_stay_top": 5.260722728807835,
-        "mean_stay_bottom": 3.624383879385329
+        "true_positive_bottom_se": 0.0192274464417204,
+        "true_positive_diff": 0.1516827092788056,
+        "true_positive_diff_se": 0.0193427192200318
       },
       "VPIN (true labels)": {
         "buckets_per_day": 50,
         "sample_length": 50,
         "signal": "VPIN (true labels)",
-        "corr": -0.1229999328859154,
         "n_obs": 117141,
-        "insurance": 0.1744538517821678,
-        "alarm_rate": 0.2867911320545325,
-        "lift": 0.608295837226222,
         "big_moves": 9567,
+        "corr": -0.122999932885914,
+        "corr_se": 0.0236551460690163,
+        "insurance": 0.1744538517821678,
+        "insurance_se": 0.0310656481159966,
+        "alarm_rate": 0.2867911320545325,
+        "alarm_rate_se": 0.0314814845577542,
+        "lift": 0.608295837226222,
+        "lift_se": 0.0815722575505713,
         "true_positive_top": 0.269560927479033,
+        "true_positive_top_se": 0.0103210457594723,
         "true_positive_bottom": 0.3971640105408457,
-        "mean_stay_top": 3.312876171682289,
-        "mean_stay_bottom": 3.3235035763583887
+        "true_positive_bottom_se": 0.0317879342472362,
+        "true_positive_diff": -0.1276030830618127,
+        "true_positive_diff_se": 0.0324837157289789
       },
       "RV (trailing volatility)": {
         "buckets_per_day": 50,
         "sample_length": 50,
         "signal": "RV (trailing volatility)",
-        "corr": 0.3592687276360747,
         "n_obs": 117140,
-        "insurance": 0.3997073272708268,
-        "alarm_rate": 0.1208639235103295,
-        "lift": 3.3070854864037753,
         "big_moves": 9567,
+        "corr": 0.3592687276360438,
+        "corr_se": 0.0320805245598987,
+        "insurance": 0.3997073272708268,
+        "insurance_se": 0.072050572506251,
+        "alarm_rate": 0.1208639235103295,
+        "alarm_rate_se": 0.025339591875058,
+        "lift": 3.3070854864037753,
+        "lift_se": 0.281953327178765,
         "true_positive_top": 0.6473067915690867,
+        "true_positive_top_se": 0.0201901501694177,
         "true_positive_bottom": 0.3246713543258942,
-        "mean_stay_top": 6.631850117096019,
-        "mean_stay_bottom": 4.520126362987873
+        "true_positive_bottom_se": 0.007664299351992,
+        "true_positive_diff": 0.3226354372431924,
+        "true_positive_diff_se": 0.0215484841395785
       }
     },
     "250": {
@@ -471,46 +799,64 @@
         "buckets_per_day": 50,
         "sample_length": 250,
         "signal": "VPIN (bulk classified)",
-        "corr": 0.1116074067808843,
         "n_obs": 116941,
-        "insurance": 0.4078341013824885,
-        "alarm_rate": 0.2679983923516987,
-        "lift": 1.5217781636812249,
         "big_moves": 9548,
+        "corr": 0.1116074067808878,
+        "corr_se": 0.0276517616803875,
+        "insurance": 0.4078341013824885,
+        "insurance_se": 0.0464562306858821,
+        "alarm_rate": 0.2679983923516987,
+        "alarm_rate_se": 0.0283743115098898,
+        "lift": 1.5217781636812249,
+        "lift_se": 0.1165886714783377,
         "true_positive_top": 0.7034949267192785,
+        "true_positive_top_se": 0.0160411133538091,
         "true_positive_bottom": 0.6300875837197321,
-        "mean_stay_top": 17.666290868094702,
-        "mean_stay_bottom": 12.465739309634207
+        "true_positive_bottom_se": 0.022443002714286,
+        "true_positive_diff": 0.0734073429995464,
+        "true_positive_diff_se": 0.0257758963896104
       },
       "VPIN (true labels)": {
         "buckets_per_day": 50,
         "sample_length": 250,
         "signal": "VPIN (true labels)",
-        "corr": -0.1606158239303848,
         "n_obs": 116941,
-        "insurance": 0.1468370339338081,
-        "alarm_rate": 0.2949778093226499,
-        "lift": 0.4977901024859676,
         "big_moves": 9548,
+        "corr": -0.1606158239303849,
+        "corr_se": 0.0266259386672983,
+        "insurance": 0.1468370339338081,
+        "insurance_se": 0.0334477158118937,
+        "alarm_rate": 0.2949778093226499,
+        "alarm_rate_se": 0.0429746246128422,
+        "lift": 0.4977901024859676,
+        "lift_se": 0.0843892133220736,
         "true_positive_top": 0.5016170763260026,
+        "true_positive_top_se": 0.0172032433186863,
         "true_positive_bottom": 0.6065217391304348,
-        "mean_stay_top": 11.155562742561449,
-        "mean_stay_bottom": 13.252173913043478
+        "true_positive_bottom_se": 0.0271619339484996,
+        "true_positive_diff": -0.1049046628044322,
+        "true_positive_diff_se": 0.0323277111718197
       },
       "RV (trailing volatility)": {
         "buckets_per_day": 50,
         "sample_length": 250,
         "signal": "RV (trailing volatility)",
-        "corr": 0.3470623677571515,
         "n_obs": 116940,
-        "insurance": 0.3757855048177629,
-        "alarm_rate": 0.113126389601505,
-        "lift": 3.32182001159492,
         "big_moves": 9548,
+        "corr": 0.3470623677571732,
+        "corr_se": 0.0322589185811434,
+        "insurance": 0.3757855048177629,
+        "insurance_se": 0.0781821284644936,
+        "alarm_rate": 0.113126389601505,
+        "alarm_rate_se": 0.0271973252815763,
+        "lift": 3.32182001159492,
+        "lift_se": 0.3284929468658465,
         "true_positive_top": 0.6948051948051948,
+        "true_positive_top_se": 0.0231754847969728,
         "true_positive_bottom": 0.5125303152789006,
-        "mean_stay_top": 28.634199134199132,
-        "mean_stay_bottom": 19.12287793047696
+        "true_positive_bottom_se": 0.0124839461952964,
+        "true_positive_diff": 0.1822748795262941,
+        "true_positive_diff_se": 0.0260348909978768
       }
     }
   },
@@ -527,7 +873,13 @@
       "mean_vpin_bvc": 0.2205821052312974,
       "mean_vpin_true": 0.1005877373129644,
       "corr_vpin_bvc_rv": 0.408757509770076,
-      "corr_vpin_true_rv": -0.2013504310142189
+      "corr_vpin_true_rv": -0.2013504310142189,
+      "se": {
+        "corr_vpin_bvc_true": 0.03655316497976396,
+        "corr_abs_imbalance_with_same_bucket_abs_return_bvc": 0.009752822821406031,
+        "corr_abs_imbalance_with_same_bucket_abs_return_true": 0.020980063241970954,
+        "imbalance_inflation": 2.1929519217323867
+      }
     },
     "50_250": {
       "buckets": 120190,
@@ -541,14 +893,22 @@
       "mean_vpin_bvc": 0.2206049783747329,
       "mean_vpin_true": 0.10056268270672022,
       "corr_vpin_bvc_rv": 0.3804451182718878,
-      "corr_vpin_true_rv": -0.35497587565628425
+      "corr_vpin_true_rv": -0.35497587565628425,
+      "se": {
+        "corr_vpin_bvc_true": 0.0678658699991304,
+        "corr_abs_imbalance_with_same_bucket_abs_return_bvc": 0.009794473124115332,
+        "corr_abs_imbalance_with_same_bucket_abs_return_true": 0.020985023016271417,
+        "imbalance_inflation": 2.194149767283624
+      }
     }
   },
   "btc_bars": {
+    "direction_agreement": 0.8212925392730585,
+    "direction_agreement_se": 0.0017909921847272,
     "direction_agreement_min": 0.787410140112018,
     "direction_agreement_max": 0.830782932812552,
-    "corr_buy_share_min": 0.5674435517632669,
-    "corr_buy_share_max": 0.6649007461566149
+    "corr_buy_share": 0.6041954024734714,
+    "corr_buy_share_se": 0.0063130869227378
   },
   "btc_trades": {
     "tick_accuracy_min": 0.9297633838026952,
@@ -568,6 +928,9 @@
       "signal": "vpin",
       "n_obs": 119570,
       "r2_vpin_alone": 0.0220978300678985,
+      "delta_r2_se": 0.0004603071768674,
+      "delta_r2_lo": 0.0002999155415137,
+      "delta_r2_hi": 0.0020784843907019,
       "r2_controls": 0.1561198080748779,
       "r2_controls_plus_vpin": 0.1571096904954051,
       "delta_r2": 0.0009898824205272,
@@ -583,6 +946,9 @@
       "signal": "vpin_true",
       "n_obs": 119570,
       "r2_vpin_alone": 0.0112564169978129,
+      "delta_r2_se": 0.000614527593667,
+      "delta_r2_lo": 1.509475510888536e-06,
+      "delta_r2_hi": 0.0020358431146402,
       "r2_controls": 0.1561198080748779,
       "r2_controls_plus_vpin": 0.1564819380175092,
       "delta_r2": 0.0003621299426312,
@@ -598,6 +964,9 @@
       "signal": "vpin",
       "n_obs": 119371,
       "r2_vpin_alone": 0.0217015046639947,
+      "delta_r2_se": 0.0002232938604532,
+      "delta_r2_lo": 4.102787687865206e-07,
+      "delta_r2_hi": 0.000818854646276,
       "r2_controls": 0.1515389775830997,
       "r2_controls_plus_vpin": 0.1515611819659914,
       "delta_r2": 2.2204382891688468e-05,
@@ -613,6 +982,9 @@
       "signal": "vpin_true",
       "n_obs": 119371,
       "r2_vpin_alone": 0.0176960268722127,
+      "delta_r2_se": 0.0005129216751624,
+      "delta_r2_lo": 5.189346562378683e-07,
+      "delta_r2_hi": 0.0018164808658864,
       "r2_controls": 0.1515389775830997,
       "r2_controls_plus_vpin": 0.1518548149513269,
       "delta_r2": 0.0003158373682271,
@@ -628,6 +1000,9 @@
       "signal": "vpin",
       "n_obs": 18284,
       "r2_vpin_alone": 0.0099301684945981,
+      "delta_r2_se": 0.0032097178323952,
+      "delta_r2_lo": 0.0002028224753933,
+      "delta_r2_hi": 0.0116957301132072,
       "r2_controls": 0.1344474493702807,
       "r2_controls_plus_vpin": 0.1351735569069516,
       "delta_r2": 0.0007261075366709,
@@ -643,6 +1018,9 @@
       "signal": "vpin",
       "n_obs": 155892,
       "r2_vpin_alone": 0.0166204848573937,
+      "delta_r2_se": 0.0010845894508607,
+      "delta_r2_lo": 0.0005844018186709,
+      "delta_r2_hi": 0.0045843844696983,
       "r2_controls": 0.0828095436832248,
       "r2_controls_plus_vpin": 0.0853226566230601,
       "delta_r2": 0.0025131129398353,
@@ -658,6 +1036,9 @@
       "signal": "vpin",
       "n_obs": 3839,
       "r2_vpin_alone": 0.0473215216798992,
+      "delta_r2_se": 0.006412450256962,
+      "delta_r2_lo": 7.324451807811383e-05,
+      "delta_r2_hi": 0.0240640915217644,
       "r2_controls": 0.0679759540216605,
       "r2_controls_plus_vpin": 0.0769636781467931,
       "delta_r2": 0.0089877241251326,
@@ -673,6 +1054,9 @@
       "signal": "vpin",
       "n_obs": 36216,
       "r2_vpin_alone": 0.0117877416837642,
+      "delta_r2_se": 0.0012980626122073,
+      "delta_r2_lo": 0.0001071461139013,
+      "delta_r2_hi": 0.0047649314248159,
       "r2_controls": 0.0849465031146696,
       "r2_controls_plus_vpin": 0.0869654558232995,
       "delta_r2": 0.0020189527086298,
@@ -688,6 +1072,9 @@
       "signal": "vpin",
       "n_obs": 3739,
       "r2_vpin_alone": 0.0572035546485697,
+      "delta_r2_se": 0.0083827176847083,
+      "delta_r2_lo": 0.0001952369278244,
+      "delta_r2_hi": 0.0311590174167247,
       "r2_controls": 0.0665921965767455,
       "r2_controls_plus_vpin": 0.0810206443434556,
       "delta_r2": 0.0144284477667101,
@@ -703,6 +1090,9 @@
       "signal": "vpin",
       "n_obs": 36216,
       "r2_vpin_alone": 0.01078665835468,
+      "delta_r2_se": 0.001276526816588,
+      "delta_r2_lo": 2.6412390231755903e-05,
+      "delta_r2_hi": 0.0046287346344473,
       "r2_controls": 0.0796965232541018,
       "r2_controls_plus_vpin": 0.081373512889406,
       "delta_r2": 0.0016769896353042,
@@ -718,6 +1108,9 @@
       "signal": "vpin",
       "n_obs": 7621,
       "r2_vpin_alone": 0.0079057024908976,
+      "delta_r2_se": 0.0044574922941377,
+      "delta_r2_lo": 4.10842637515535e-05,
+      "delta_r2_hi": 0.0161494975258641,
       "r2_controls": 0.2959120956895976,
       "r2_controls_plus_vpin": 0.2967551024131993,
       "delta_r2": 0.0008430067236017,
@@ -733,6 +1126,9 @@
       "signal": "vpin",
       "n_obs": 69151,
       "r2_vpin_alone": 0.0126528423561262,
+      "delta_r2_se": 0.0010495828157388,
+      "delta_r2_lo": 6.705600502995291e-05,
+      "delta_r2_hi": 0.0038918363647456,
       "r2_controls": 0.0772578404857441,
       "r2_controls_plus_vpin": 0.0788612650361249,
       "delta_r2": 0.0016034245503807,
@@ -886,6 +1282,48 @@
       "rv_alarm_share": 0.0874528657616892,
       "rv_alarm_on": false,
       "rv_alarm_hours_before": 0.0
+    }
+  ],
+  "alarms": [
+    {
+      "market": "BTC",
+      "signal": "vpin",
+      "hits": 1,
+      "falls": 3,
+      "alarm_share": 0.0960116781342302,
+      "p_value_binomial": 0.2612653663045716
+    },
+    {
+      "market": "BTC",
+      "signal": "vpin_true",
+      "hits": 1,
+      "falls": 3,
+      "alarm_share": 0.1358607502006112,
+      "p_value_binomial": 0.3547155574823731
+    },
+    {
+      "market": "BTC",
+      "signal": "rv",
+      "hits": 0,
+      "falls": 3,
+      "alarm_share": 0.031252934497742,
+      "p_value_binomial": 1.0
+    },
+    {
+      "market": "IVE",
+      "signal": "vpin",
+      "hits": 5,
+      "falls": 5,
+      "alarm_share": 0.1479112560743963,
+      "p_value_binomial": 7.079557700420736e-05
+    },
+    {
+      "market": "IVE",
+      "signal": "rv",
+      "hits": 3,
+      "falls": 5,
+      "alarm_share": 0.0874528657616892,
+      "p_value_binomial": 0.0058417107572993
     }
   ]
 }

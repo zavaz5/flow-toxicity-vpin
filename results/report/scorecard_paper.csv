@@ -1,0 +1,11 @@
+#,Claim,"Paper reports (E-mini, 2008–11)",Where
+1,"VPIN does not depend on where the bucket sequence starts (std / mean across 1,000 starts)",6.5%,Fig. 5
+2,"Volume time is closer to normal than clock time: Kurt, J-B*, L-B*, White* lower",4 of 4 at 50 and at 100 draws a day,Table 1
+3,"CDF(VPIN) > 0.9 at least 2 h before the flash crash: BVC, one-minute bars",≥ 2 h,Fig. 4(a)
+4,"... BVC, 10-second bars",≥ 2 h,Fig. 4(b)
+5,"... Lee-Ready, trade by trade",≥ 2 h,Fig. 4(c)
+6,Low VPIN (bottom quartile) → next |return| < 0.25%,> 90%,"Table 4a, p. 30"
+7,"Corr(ln VPIN, next |return|) at (50, 250)","0.40 [0.392, 0.408]","Fig. 10, fn. 29"
+8,"P(VPIN in top quartile | next |return| > 0.75%) at (50, 250)",> 84%,Sec. 5.2
+9,"P(move > 0.75% while VPIN stays in the top quartile) at (50, 250)",51.8%,Fig. 14
+10,"... at (10, 350)",78.6%,Table 5

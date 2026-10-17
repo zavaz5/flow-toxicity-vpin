@@ -58,6 +58,11 @@ def sampling_stats(prices: np.ndarray, days: np.ndarray | None = None) -> dict:
     x = np.diff(np.asarray(prices, dtype=float))
     if days is not None:            # intraday only: drop changes that span the close
         x = x[days[1:] == days[:-1]]
+    return diff_stats(x)
+
+
+def diff_stats(x: np.ndarray) -> dict:
+    """Table 1 statistics of a series of price changes (standardized here)."""
     x = (x - x.mean()) / x.std()
     s, k = stats.skew(x), stats.kurtosis(x, fisher=False)
     return {

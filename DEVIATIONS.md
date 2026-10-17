@@ -39,5 +39,7 @@ Each row gives what we changed, why, and how it affects the comparison. The numb
 | Real-time bucket size | Average daily volume over the previous 250 days / buckets per day | Uses only the past |
 | Real-time CDF | Share of all earlier VPIN values ≤ the current one, after 60 days of buckets | Uses only the past |
 | Trailing volatility (RV) | Mean \|return\| over the same n buckets as VPIN | The simplest volatility forecast with the same window and timing as VPIN |
+| Uncertainty (±) | Block bootstrap over calendar months, 1,000 replications, seed 0; ± is the standard error, brackets the 2.5–97.5% percentiles (`src/vpin/uncertainty.py`) | VPIN windows overlap and volatility clusters, so single buckets are not independent; the paper's iid Fisher interval (footnote 29) ignores this |
+| Table 1 precision | Paired bootstrap over months: both samples draw the same months; "P(volume lower)" is the share of replications in which volume time has the lower statistic | Tests the paper's comparison within our data, without mixing sources |
 | BTC "day" | UTC calendar day | BTC trades 24/7 |
 | BTC trade-day buckets | 1/250 of the trailing average daily volume | Enough buckets inside a single day to compare classifiers |

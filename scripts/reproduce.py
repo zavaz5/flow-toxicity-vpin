@@ -20,6 +20,7 @@ import yaml
 from vpin import analysis as A
 from vpin import paper_numbers as PN
 from vpin import plots as P
+from vpin import uncertainty as U
 from vpin.bars import bar_price_changes, time_bars
 from vpin.buckets import average_daily_volume, build_buckets
 from vpin.classify import bvc_buy_fraction, lee_ready
@@ -120,7 +121,7 @@ def stability(bars1, buy_volume, v_bucket, n, shifts, fig):
             "std_over_mean": float(std[ok].mean() / np.nanmean(base))}
 
 
-def prediction(bars1, buy_volume, adv, grids, out, fig):
+def prediction(bars1, buy_volume, adv, grids, out, fig, reps):
     """Section 5: correlation surface, conditional tables, insurance value, Table 5."""
     move, width = CFG["prediction"]["big_move"], CFG["prediction"]["return_bin"]
     cache, rows = {}, []
@@ -176,6 +177,14 @@ def prediction(bars1, buy_volume, adv, grids, out, fig):
     t5.to_csv(out / "table5.csv")
     P.table_heatmaps(t5, np.array(PN.TABLE5), "Table 5: largest move while VPIN stays in a 5%-tile, (10, 350)",
                      fig / "table5_events.png")
+    # ± by month-block bootstrap (vpin.uncertainty), and the iid Fisher interval the paper uses
+    unc = {}
+    for key in (pref, best):
+        kb, kv, kcdf, kret, _ = cache[key]
+        unc[f"{key[0]}_{key[1]}"] = U.section5(kv, kcdf, kret, kb["end_price"].to_numpy(), kb["end_ts"], reps=reps)
+    r, n_obs = A.vpin_return_correlation(v, ret)
+    half = 1.96 / np.sqrt(n_obs - 3)
+    fisher_ci = [float(np.tanh(np.arctanh(r) - half)), float(np.tanh(np.arctanh(r) + half))]
     at = lambda key: surface[(surface["buckets_per_day"] == key[0]) & (surface["sample_length"] == key[1])].iloc[0]
     fig14 = grid_view("fig14", "true_positive")
     fig12 = grid_view("fig12", "insurance")
@@ -191,6 +200,7 @@ def prediction(bars1, buy_volume, adv, grids, out, fig):
         "true_positive_fig14_max": float(np.nanmax(fig14.to_numpy())),
         "true_positive_fig14_argmax": [int(c) for c in np.unravel_index(np.nanargmax(fig14.to_numpy()), fig14.shape)[::-1]],
         "top_quartile_stays_10_350": int(at(best)["top_quartile_stays"]),
+        "uncertainty": unc, "corr_50_250_fisher_ci_iid": fisher_ci,
     }
 
 
@@ -216,7 +226,8 @@ def main():
                "share_bars_no_price_change": float(np.mean(bar_price_changes(bars1) == 0))}
 
     base = with_vpin(bars1, buy1, adv / bpd, n)
-    base[["end_ts", "end_price", "buy", "sell", "vpin", "cdf"]].to_csv(out / "vpin_50_50.csv.gz", index=False)
+    base[["end_ts", "end_price", "buy", "sell", "vpin", "cdf"]].to_csv(
+        out / "vpin_50_50.csv.gz", index=False, compression={"method": "gzip", "mtime": 0})  # same bytes every run
     summary["table2"] = {"ours": A.vpin_summary(base["vpin"].to_numpy()), "paper": PN.TABLE2_SP500}
     crash = pd.Timestamp(CFG["ive"]["flash_crash_day"])
     t3 = pd.DataFrame({"before": A.vpin_quantiles(base.loc[base["end_ts"] < crash, "vpin"].to_numpy()),
@@ -236,6 +247,8 @@ def main():
         A.sampling_table(no_crash, draws, SESSION_MINUTES).to_csv(out / f"table1_{draws}_no_crash_day.csv")
         A.sampling_table(no_crash, draws, SESSION_MINUTES, intraday_only=True).to_csv(
             out / f"table1_{draws}_no_crash_day_intraday.csv")
+        U.table1(no_crash, draws, SESSION_MINUTES, reps=50 if args.smoke else U.REPS).to_csv(
+            out / f"table1_{draws}_bootstrap.csv")
     P.sampling_histograms(A.sample_by_clock(no_crash, 50, SESSION_MINUTES), A.sample_by_volume(no_crash, 50),
                           fig / "fig3_sampling.png")
 
@@ -246,7 +259,7 @@ def main():
     if args.smoke:
         grids = {k: {"buckets_per_day": [10, 50], "sample_length": [50, 250]} for k in ("grid_fig10", "grid_fig12", "grid_fig14")}
     grids = {k.replace("grid_", ""): v for k, v in grids.items() if k.startswith("grid_")}
-    summary["prediction"] = prediction(bars1, buy1, adv, grids, out, fig)
+    summary["prediction"] = prediction(bars1, buy1, adv, grids, out, fig, 50 if args.smoke else U.REPS)
     summary["seconds"] = time.perf_counter() - started
     write_json(summary, out / "summary.json")
     print(json.dumps(summary, indent=1, default=float)[:3000])

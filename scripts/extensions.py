@@ -19,10 +19,11 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 import yaml
-from scipy.stats import norm
+from scipy.stats import binom, norm
 
 from vpin import analysis as A
 from vpin import plots as P
+from vpin import uncertainty as U
 from vpin.bars import bar_log_changes, time_bars
 from vpin.classify import tick_rule
 from vpin.data import load_btc_klines, load_btc_trades, load_ive_ticks
@@ -53,27 +54,18 @@ def realtime_cdf(x: np.ndarray, min_history: int) -> np.ndarray:
     return cdf_expanding(np.asarray(x, dtype=float), min_history)
 
 
-def metrics(b: pd.DataFrame, col: str, cdf: np.ndarray, mask: np.ndarray) -> dict:
-    """Section 5 statistics for one signal on the buckets selected by `mask`."""
-    prev = A.lagged(cdf)
-    ret = b["ret"].to_numpy()
-    with np.errstate(divide="ignore"):
-        x = np.log(A.lagged(b[col].to_numpy()))
-    ok = mask & np.isfinite(x) & np.isfinite(ret) & np.isfinite(prev)
-    big = ok & (ret > MOVE)
-    events = A.intermediate_events(cdf, b["end_price"].to_numpy())
-    events = events[mask[events["start"].to_numpy()]]
-    alarm = float(np.mean(prev[ok] > 0.75))
-    insurance = float(np.mean(prev[big] > 0.75)) if big.any() else np.nan
-    return {
-        "corr": float(np.corrcoef(x[ok], ret[ok])[0, 1]), "n_obs": int(ok.sum()),
-        "insurance": insurance, "alarm_rate": alarm, "lift": insurance / alarm if alarm else np.nan,
-        "big_moves": int(big.sum()),
-        "true_positive_top": A.true_positive_rate(events, MOVE, 15),
-        "true_positive_bottom": float((events.loc[events["bin"] <= 4, "max_abs_return"] > MOVE).mean()),
-        "mean_stay_top": float(events.loc[events["bin"] >= 15, "buckets"].mean()),
-        "mean_stay_bottom": float(events.loc[events["bin"] <= 4, "buckets"].mean()),
-    }
+def metrics(b: pd.DataFrame, col: str, cdf: np.ndarray, mask: np.ndarray, reps: int = U.REPS) -> dict:
+    """Section 5 statistics for one signal on the buckets selected by `mask`, each with its
+    month-block bootstrap standard error (column suffix `_se`)."""
+    res = U.section5(b[col].to_numpy(), cdf, b["ret"].to_numpy(), b["end_price"].to_numpy(), b["end_ts"],
+                     mask=mask, move=MOVE, reps=reps)
+    names = {"corr": "corr", "insurance": "insurance", "alarm": "alarm_rate", "lift": "lift",
+             "tp_top": "true_positive_top", "tp_bottom": "true_positive_bottom", "tp_diff": "true_positive_diff"}
+    out = {"n_obs": res["n_obs"], "big_moves": res["big_moves"]}
+    for key, name in names.items():
+        out[name] = res[key]["value"]
+        out[f"{name}_se"] = res[key]["se"]
+    return out
 
 
 def regression(b: pd.DataFrame, mask: np.ndarray, vpin_cols: list[str], n: int) -> list[dict]:
@@ -94,12 +86,16 @@ def regression(b: pd.DataFrame, mask: np.ndarray, vpin_cols: list[str], n: int) 
     data = data.replace([np.inf, -np.inf], np.nan).dropna()
     z = (data - data.mean()) / data.std()
     out = []
+    ts = b.loc[data.index, "end_ts"]
     base = sm.OLS(z["y"], sm.add_constant(z[controls.columns])).fit()
     for c in vpin_cols:
         alone = sm.OLS(z["y"], sm.add_constant(z[[c]])).fit()
         full = sm.OLS(z["y"], sm.add_constant(z[list(controls.columns) + [c]])).fit(
             cov_type="HAC", cov_kwds={"maxlags": n})
+        boot = U.ols_delta_r2(z[list(controls.columns) + [c]].to_numpy(), z["y"].to_numpy(), extra=1, ts=ts)
         out.append({"signal": c, "n_obs": int(full.nobs), "r2_vpin_alone": alone.rsquared,
+                    "delta_r2_se": boot["delta_r2"]["se"], "delta_r2_lo": boot["delta_r2"]["lo"],
+                    "delta_r2_hi": boot["delta_r2"]["hi"],
                     "r2_controls": base.rsquared, "r2_controls_plus_vpin": full.rsquared,
                     "delta_r2": full.rsquared - base.rsquared,
                     "beta_vpin": full.params[c], "t_vpin_hac": full.tvalues[c],
@@ -254,6 +250,16 @@ def btc_experiments(out: Path, fig: Path, smoke: bool) -> dict:
                          "direction_agreement_volume_weighted": float(np.average(agree, weights=bars["volume"].to_numpy()[m])),
                          "mean_abs_bvc_imbalance": float(np.mean(np.abs(2 * f_bvc[m] - 1))),
                          "mean_abs_true_imbalance": float(np.mean(np.abs(2 * f_true[m] - 1)))})
+    ok = np.isfinite(f_bvc)
+    months = U.month_ids(bars["ts"][ok])
+    w = bars["volume"].to_numpy()[ok]
+    agree = (np.sign(f_bvc[ok] - 0.5) == np.sign(f_true[ok] - 0.5)).astype(float)
+    sums = U.monthly_sums(months, U.corr_columns(f_bvc[ok], f_true[ok]) + [w * agree, w], months.max() + 1)
+    pooled = U.bootstrap(sums, {"corr": U.corr_from_sums, "agree": lambda t: t[6] / t[7]})
+    bar_rows.append({"year": "all", "bars": int(ok.sum()), "corr_buy_share": pooled["corr"]["value"],
+                     "corr_buy_share_se": pooled["corr"]["se"],
+                     "direction_agreement_volume_weighted": pooled["agree"]["value"],
+                     "direction_agreement_se": pooled["agree"]["se"]})
     pd.DataFrame(bar_rows).to_csv(out / "btc_bars_bvc_vs_truth.csv", index=False)
 
     # Bucket level and VPIN: same buckets, two classifications
@@ -278,6 +284,7 @@ def btc_experiments(out: Path, fig: Path, smoke: bool) -> dict:
             "corr_vpin_bvc_rv": float(b.loc[ok, "vpin"].corr(b.loc[ok, "rv"])),
             "corr_vpin_true_rv": float(b.loc[ok, "vpin_true"].corr(b.loc[ok, "rv"])),
         }
+        res[f"{bpd}_{n}"]["se"] = bucket_uncertainty(b, oi_bvc.to_numpy(), oi_true.to_numpy())
         mask = np.ones(len(b), dtype=bool)
         for signal, col in [("VPIN (bulk classified)", "vpin"), ("VPIN (true labels)", "vpin_true"),
                             ("RV (trailing volatility)", "rv")]:
@@ -306,6 +313,42 @@ def btc_experiments(out: Path, fig: Path, smoke: bool) -> dict:
                           trade_day_buckets(t, sign, est, day))
     pd.DataFrame(trade_rows).to_csv(out / "btc_trade_days.csv", index=False)
     return {"buckets": res, "regressions": regressions, "events": events, "bars": bar_rows}
+
+
+def bucket_uncertainty(b: pd.DataFrame, oi_bvc: np.ndarray, oi_true: np.ndarray) -> dict:
+    """± (month-block bootstrap) for the bucket-level comparison of BVC with the truth."""
+    ok = (b["vpin"].notna() & b["vpin_true"].notna() & b["ret"].notna()).to_numpy()
+    months = U.month_ids(b["end_ts"][ok])
+    v, vt, r = b["vpin"].to_numpy()[ok], b["vpin_true"].to_numpy()[ok], b["ret"].to_numpy()[ok]
+    cols = (U.corr_columns(v, vt) + U.corr_columns(oi_bvc[ok], r) + U.corr_columns(oi_true[ok], r)
+            + [oi_bvc[ok], oi_true[ok]])
+    sums = U.monthly_sums(months, cols, months.max() + 1)
+    res = U.bootstrap(sums, {
+        "corr_vpin_bvc_true": lambda t: U.corr_from_sums(t[0:6]),
+        "corr_abs_imbalance_with_same_bucket_abs_return_bvc": lambda t: U.corr_from_sums(t[6:12]),
+        "corr_abs_imbalance_with_same_bucket_abs_return_true": lambda t: U.corr_from_sums(t[12:18]),
+        "imbalance_inflation": lambda t: t[18] / t[19],
+    })
+    return {k: v["se"] for k, v in res.items()} | {"imbalance_inflation": res["imbalance_inflation"]["value"]}
+
+
+def alarm_summary(events: list[dict]) -> pd.DataFrame:
+    """Hits per market and signal against the alarm's base rate.
+
+    The binomial p-value is P(at least this many hits) if the alarm were on at each fall
+    independently with its overall base rate. Falls are few and not independent of
+    the market's state, so it is a rough guide only.
+    """
+    ev = pd.DataFrame(events)
+    rows = []
+    for market, g in ev.groupby("market", sort=False):
+        for c in ("vpin", "vpin_true", "rv"):
+            if f"{c}_alarm_on" not in g or g[f"{c}_alarm_on"].isna().all():
+                continue
+            hits, n, share = int(g[f"{c}_alarm_on"].astype(bool).sum()), len(g), float(g[f"{c}_alarm_share"].iloc[0])
+            rows.append({"market": market, "signal": c, "hits": hits, "falls": n, "alarm_share": share,
+                         "p_value_binomial": float(binom.sf(hits - 1, n, share))})
+    return pd.DataFrame(rows)
 
 
 def trade_day_buckets(t: pd.DataFrame, sign: np.ndarray, est: pd.DataFrame, day: str) -> dict:
@@ -347,6 +390,7 @@ def main():
     ive = ive_experiments(out, fig, args.smoke)
     pd.DataFrame(btc["regressions"] + ive["regressions"]).to_csv(out / "regressions.csv", index=False)
     pd.DataFrame(btc["events"] + ive["events"]).to_csv(out / "crash_events.csv", index=False)
+    alarm_summary(btc["events"] + ive["events"]).to_csv(out / "crash_alarm_summary.csv", index=False)
     summary = {"btc_buckets": btc["buckets"], "ive_chosen_parameters": ive["chosen"],
                "seconds": time.perf_counter() - started}
     (out / "summary.json").write_text(json.dumps(summary, indent=2, default=float))
