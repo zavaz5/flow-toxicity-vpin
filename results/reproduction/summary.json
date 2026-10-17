@@ -1,0 +1,106 @@
+{
+  "period": [
+    "2009-09-28",
+    "2011-08-15"
+  ],
+  "days": 475,
+  "ticks": 942321,
+  "one_minute_bars": 146828,
+  "adv_shares": 785572.1157894736,
+  "bucket_volume_50": 15711.442315789473,
+  "sigma_dollars_1min": 0.04624308802061419,
+  "share_bars_no_price_change": 0.28839185986324134,
+  "table2": {
+    "ours": {
+      "Average": 0.17929195719942906,
+      "StDev": 0.08423531305761969,
+      "Skew": 1.807194425620816,
+      "Ex. Kurt": 5.229456863360246,
+      "AR(1)": 0.9983132248181299,
+      "#Observ.": 23701,
+      "CDF(0.1)": 0.0977078026834241,
+      "CDF(0.25)": 0.12245346262128078,
+      "CDF(0.5)": 0.15938987517508893,
+      "CDF(0.75)": 0.21417695197515452,
+      "CDF(0.9)": 0.2822129301036482
+    },
+    "paper": {
+      "Average": 0.2251,
+      "StDev": 0.0576,
+      "Skew": 0.7801,
+      "Ex. Kurt": 0.9124,
+      "AR(1)": 0.9958,
+      "#Observ.": 44665,
+      "CDF(0.1)": 0.1578,
+      "CDF(0.25)": 0.1859,
+      "CDF(0.5)": 0.2178,
+      "CDF(0.75)": 0.2559,
+      "CDF(0.9)": 0.3023
+    }
+  },
+  "flash_crash": [
+    {
+      "scheme": "BVC, 1-minute bars",
+      "mean_vpin_sample": 0.17929195719942911,
+      "max_vpin_day": 0.5990976776325192,
+      "max_cdf_day": 0.9980169613096493,
+      "first_cdf_0.9": "2010-05-06 09:40:00",
+      "lead_hours_before_14:32": 4.866666666666666,
+      "mean_cdf_after_crash": 0.9952585216751286
+    },
+    {
+      "scheme": "BVC, 10-second bars",
+      "mean_vpin_sample": 0.14723071750938735,
+      "max_vpin_day": 0.5580652103714935,
+      "max_cdf_day": 0.9950213071178431,
+      "first_cdf_0.9": "2010-05-06 14:43:10",
+      "lead_hours_before_14:32": -0.18611111111111112,
+      "mean_cdf_after_crash": 0.9916890520324977
+    },
+    {
+      "scheme": "Lee-Ready, trade by trade",
+      "mean_vpin_sample": 0.42102825818496836,
+      "max_vpin_day": 0.5332653422109828,
+      "max_cdf_day": 0.8539302139150247,
+      "first_cdf_0.9": null,
+      "lead_hours_before_14:32": null,
+      "mean_cdf_after_crash": 0.6761074310038488
+    }
+  ],
+  "time_gap": {
+    "buckets_on_day": 135,
+    "gap_hours_first": 21.466666666666665,
+    "gap_hours_min": 0.75
+  },
+  "stability": {
+    "shifts": 1000,
+    "mean_cross_sectional_std": 0.006075013272810782,
+    "max_cross_sectional_std": 0.037366366087371664,
+    "mean_vpin": 0.16402118411286165,
+    "std_over_mean": 0.037037979610186296
+  },
+  "prediction": {
+    "corr_50_250": 0.07784182943166362,
+    "n_obs_50_250": 23500,
+    "corr_50_250_intraday": 0.07726755214454686,
+    "share_buckets_spanning_close": 0.02,
+    "corr_max": 0.09772932072946917,
+    "corr_argmax": [
+      30,
+      70
+    ],
+    "bottom_quartile_small_move": 0.9610212765957448,
+    "insurance_50_250": 0.5103448275862069,
+    "big_moves_50_250": 145,
+    "insurance_fig12_median": 0.43703703703703706,
+    "true_positive_50_250": 0.336,
+    "true_positive_10_350": 0.5970149253731343,
+    "true_positive_fig14_max": 0.6595744680851063,
+    "true_positive_fig14_argmax": [
+      0,
+      9
+    ],
+    "top_quartile_stays_10_350": 67
+  },
+  "seconds": 9.824307334027253
+}

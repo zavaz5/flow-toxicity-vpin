@@ -1,0 +1,51 @@
+{
+  "btc_buckets": {
+    "50_50": {
+      "buckets": 120190,
+      "corr_signed_imbalance": 0.7784051428555013,
+      "corr_abs_imbalance": 0.6086905864046915,
+      "mean_abs_imbalance_bvc": 0.22059945428639388,
+      "mean_abs_imbalance_true": 0.10059800146909896,
+      "corr_abs_imbalance_with_same_bucket_abs_return_bvc": 0.44079210398946533,
+      "corr_abs_imbalance_with_same_bucket_abs_return_true": 0.2868362284978734,
+      "corr_vpin_bvc_true": 0.3875588941421534,
+      "mean_vpin_bvc": 0.2205821052312974,
+      "mean_vpin_true": 0.1005877373129644,
+      "corr_vpin_bvc_rv": 0.408757509770076,
+      "corr_vpin_true_rv": -0.2013504310142189
+    },
+    "50_250": {
+      "buckets": 120190,
+      "corr_signed_imbalance": 0.7784051428555013,
+      "corr_abs_imbalance": 0.6086905864046915,
+      "mean_abs_imbalance_bvc": 0.22059945428639388,
+      "mean_abs_imbalance_true": 0.10059800146909896,
+      "corr_abs_imbalance_with_same_bucket_abs_return_bvc": 0.44079210398946533,
+      "corr_abs_imbalance_with_same_bucket_abs_return_true": 0.2868362284978734,
+      "corr_vpin_bvc_true": 0.26621421209486257,
+      "mean_vpin_bvc": 0.2206049783747329,
+      "mean_vpin_true": 0.10056268270672022,
+      "corr_vpin_bvc_rv": 0.3804451182718878,
+      "corr_vpin_true_rv": -0.35497587565628425
+    }
+  },
+  "ive_chosen_parameters": {
+    "paper (50, 250)": [
+      50,
+      250
+    ],
+    "paper Table 5 (10, 350)": [
+      10,
+      350
+    ],
+    "best in-sample corr": [
+      10,
+      450
+    ],
+    "best in-sample true positive": [
+      20,
+      500
+    ]
+  },
+  "seconds": 86.48700000002282
+}

@@ -1,0 +1,11 @@
+# raw and processed data are downloaded, never committed (see data/README.md)
+data/raw/
+data/processed/
+logs/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+*.egg-info/
+docs/build/

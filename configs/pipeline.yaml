@@ -1,0 +1,40 @@
+# Pipeline settings. The "reproduction" values follow Easley, López de Prado and
+# O'Hara (2012); anything that differs from the paper is listed in DEVIATIONS.md.
+
+ive:
+  symbol: IVE                      # iShares S&P 500 Value ETF, free tick data from Kibot
+  first_day: "2009-09-28"          # first day of Kibot's free IVE tick history
+  last_day: "2026-09-30"
+  session: ["09:30", "16:00"]      # regular trading hours, America/New_York
+  flash_crash_day: "2010-05-06"
+  # The paper's sample ends on 15 Aug 2011 (Section 3). IVE ticks start on 28 Sep 2009.
+  reproduction_period: ["2009-09-28", "2011-08-15"]
+  # Everything after the paper's sample is new data for the out-of-sample check.
+  out_of_sample_period: ["2011-08-16", "2026-09-30"]
+
+btc:
+  symbol: BTCUSDT                  # Binance USD-M perpetual futures, free public data
+  first_month: "2020-01"
+  last_month: "2026-09"
+  # Days with individual trades, used to compare trade-level rules with the truth.
+  trade_days: ["2021-05-19", "2024-08-05", "2025-10-10", "2024-07-10", "2025-09-17"]
+  crash_days: ["2021-05-19", "2024-08-05", "2025-10-10"]  # 2020-03-12 falls in the burn-in
+
+vpin:                              # the paper's baseline (Sections 2.4 and 4)
+  bar_seconds: 60                  # one-minute time bars for bulk classification
+  buckets_per_day: 50              # V = average daily volume / 50
+  sample_length: 50                # n buckets in the rolling VPIN window
+  cdf_alert: 0.9                   # "CDF(VPIN) crosses 0.9" in Figures 4, 7 and 9
+
+prediction:                        # Section 5
+  preferred: [50, 250]             # buckets per day, sample length ("one week")
+  best_table5: [10, 350]           # combination behind Table 5
+  # Parameter grids read off the axes of the paper's heat maps.
+  grid_fig10: {buckets_per_day: [10, 30, 50, 70, 90, 110, 130, 150, 170, 190, 210, 230, 250],
+               sample_length: [10, 30, 50, 70, 90, 110, 130, 150, 170, 190, 210, 230, 250]}
+  grid_fig12: {buckets_per_day: [20, 60, 100, 140, 180, 220, 260, 300, 340, 380],
+               sample_length: [20, 60, 100, 140, 180, 220, 260, 300, 340, 380]}
+  grid_fig14: {buckets_per_day: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+               sample_length: [50, 100, 150, 200, 250, 300, 350, 400, 450, 500]}
+  big_move: 0.0075                 # "absolute returns greater than 0.75%"
+  return_bin: 0.0025               # Table 4 bins of 0.25%
