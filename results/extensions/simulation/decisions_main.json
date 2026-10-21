@@ -1,0 +1,38 @@
+{
+  "D1_true_vpin_tracks_informed_trading": {
+    "M1_T_true": 0.9822322419976421,
+    "rule": "M1 > 0.5",
+    "holds": true
+  },
+  "D2_false_alarms_from_volatility": {
+    "paper": {
+      "M2_V": 0.11779217320906228,
+      "mc_se": 0.001957701638477623,
+      "confounds_volatility": true
+    },
+    "true": {
+      "M2_V": -0.3151052683799999,
+      "mc_se": 0.0010380049373870568,
+      "confounds_volatility": false
+    },
+    "local": {
+      "M2_V": -0.3012936595133435,
+      "mc_se": 0.0015755226949554382,
+      "confounds_volatility": false
+    }
+  },
+  "D3_predictive_test_uninformative": {
+    "M4_V_paper": -0.007035056997721898,
+    "mc_se": 0.0010798754107534912,
+    "holds": false
+  },
+  "D4_local_sigma_is_an_improvement": {
+    "M2_V_paper": 0.11779217320906228,
+    "M2_V_local": -0.3012936595133435,
+    "AUC_T_paper": 0.9910018400403904,
+    "AUC_T_local": 0.9916350132606163,
+    "a_false_alarms_halved": true,
+    "b_detection_kept": true,
+    "holds": true
+  }
+}

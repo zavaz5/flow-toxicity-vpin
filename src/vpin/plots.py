@@ -263,3 +263,78 @@ def volume_profile(bars: pd.DataFrame, path: Path) -> Path:
     ax.set_ylabel("Average shares per 5 minutes")
     ax.set_title("IVE: intraday volume profile")
     return _save(fig, path)
+
+
+def windows_chart(res: pd.DataFrame, path: Path) -> Path:
+    """All two-year windows: the paper's in-sample statistics on our data, one point per window."""
+    fig, axes = plt.subplots(1, 2, figsize=(11, 3.6))
+    for market, color in [("IVE", OURS), ("BTC", ALERT)]:
+        g = res[res["market"] == market]
+        x = pd.to_datetime(g["start"])
+        axes[0].plot(x, g["corr_50_250"], "o-", color=color, ms=3, lw=1, label=market)
+        axes[1].plot(x, g["insurance_50_250"], "o-", color=color, ms=3, lw=1, label=market)
+    axes[0].set_title("Corr(ln VPIN, next |return|) at (50, 250)")
+    axes[1].set_title("P(VPIN in top quartile | next |return| > 0.75%)")
+    axes[1].yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1.0))
+    for ax in axes:
+        ax.set_xlabel("Start of the two-year window")
+        ax.legend(fontsize=8)
+    fig.tight_layout()
+    return _save(fig, path)
+
+
+VERSION_STYLE = {"paper": ("VPIN, paper's method (BVC, whole-sample σ)", OURS),
+                 "true": ("VPIN, true labels", TRUE),
+                 "local": ("VPIN, BVC with one-day σ (our fix)", PAPER)}
+
+
+def simulation_metrics(s: pd.DataFrame, path: Path) -> Path:
+    """Simulation: false alarms in world V, detection in world T, the paper's predictive test."""
+    panels = [("V", "M2_false_alarm", "False alarms from volatility (world V)\nalarm rate high − low blocks"),
+              ("T", "M3_auc", "Detection of toxic episodes (world T)\nAUC, 0.5 = chance"),
+              ("V", "M4_predictive_corr", "Paper's predictive test where informed\ntrading never changes (world V)")]
+    fig, axes = plt.subplots(1, 3, figsize=(12, 3.6))
+    for ax, (world, metric, title) in zip(axes, panels):
+        for i, (version, (label, color)) in enumerate(VERSION_STYLE.items()):
+            r = s[(s["world"] == world) & (s["version"] == version) & (s["metric"] == metric)]
+            if r.empty:
+                continue
+            r = r.iloc[0]
+            ax.bar(i, r["mean"], color=color, yerr=1.96 * r["mc_se"], capsize=3, label=label)
+        ax.axhline(0.5 if metric == "M3_auc" else 0, color="black", lw=0.7)
+        ax.set_xticks([])
+        ax.set_title(title, fontsize=9.5)
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=3, fontsize=8, bbox_to_anchor=(0.5, -0.04))
+    fig.tight_layout(rect=(0, 0.06, 1, 1))
+    return _save(fig, path)
+
+
+def simulation_path(bars: pd.DataFrame, world: str, path: Path, n: int = 50) -> Path:
+    """One replication: VPIN versions and the true informed share over time, high blocks shaded."""
+    from .buckets import bucket_edges_fixed, build_buckets, fill_buckets
+    from .metric import vpin as vpin_fn
+    from .simulation import buy_volumes
+    v_bucket = bars["volume"].sum() / bars["day"].nunique() / 50
+    edges = bucket_edges_fixed(bars["volume"].sum(), v_bucket)
+    informed = fill_buckets(bars["volume"].to_numpy(), bars["informed"].to_numpy(), edges)
+    fig, ax = plt.subplots(figsize=(10, 3.4))
+    state = "t_high" if world == "T" else "v_high"
+    day_state = bars.groupby("day")[state].first()
+    for d, hi in day_state.items():
+        if hi:
+            ax.axvspan(d, d + 1, color=GREY, alpha=0.12, lw=0)
+    for version, buy in buy_volumes(bars).items():
+        b = build_buckets(bars, buy, v_bucket)
+        v = vpin_fn(b["buy"], b["sell"], b["volume"], n)
+        x = (b["end_ts"] - bars["ts"].iloc[0]).dt.total_seconds() / 86400
+        label, color = VERSION_STYLE[version]
+        ax.plot(x, v, color=color, lw=0.8, label=label)
+        if version == "paper":
+            share = pd.Series(informed).rolling(n).sum() / pd.Series(b["volume"]).rolling(n).sum()
+            ax.plot(x, share, color="black", lw=1.0, ls="--", label="true informed share")
+    ax.set_xlabel("Day")
+    ax.set_ylabel("VPIN / informed share")
+    ax.set_title(f"World {world}: shaded = high {'toxicity' if world == 'T' else 'volatility'} blocks")
+    ax.legend(fontsize=7, ncol=2, loc="upper left")
+    return _save(fig, path)

@@ -1,0 +1,77 @@
+{
+  "power": {
+    "corr_se_50_250": 0.04749784505148885,
+    "mde_80pct_power": 0.13299396614416878
+  },
+  "placebo": {
+    "IVE 2009-11, paper's method (50, 250)": {
+      "real_corr": 0.07784182943166362,
+      "placebo_corr_mean": 0.07839195561631604,
+      "placebo_corr_sd": 0.0018152656460596378,
+      "real_lift": 2.0413793103448277,
+      "placebo_lift_mean": 2.0193103448275864,
+      "placebo_share_of_real_corr": 1.0070672309305804,
+      "direction_carries_little": true
+    },
+    "IVE 2011-26, real-time (50, 250)": {
+      "real_corr": 0.09203235502409282,
+      "placebo_corr_mean": 0.08973215990700456,
+      "placebo_corr_sd": 0.000606691724728126,
+      "real_lift": 1.5672640502364572,
+      "placebo_lift_mean": 1.5782576155605748,
+      "placebo_share_of_real_corr": 0.9750066689428288,
+      "direction_carries_little": true
+    },
+    "BTC 2020-26, real-time (50, 50)": {
+      "real_corr": 0.12734177656234855,
+      "placebo_corr_mean": 0.1282487181242115,
+      "placebo_corr_sd": 0.0013768078507646086,
+      "real_lift": 1.5270961297390973,
+      "placebo_lift_mean": 1.5306352372219902,
+      "placebo_share_of_real_corr": 1.007122105457818,
+      "direction_carries_little": true
+    }
+  },
+  "loyo": {
+    "IVE 2011-26, real-time (50, 250) | VPIN": {
+      "corr_min": 0.06377731388348822,
+      "corr_max": 0.09947377647223626,
+      "sign_flips": 0,
+      "years": 16
+    },
+    "IVE 2011-26, real-time (50, 250) | trailing volatility": {
+      "corr_min": 0.2212612563038723,
+      "corr_max": 0.254377130737761,
+      "sign_flips": 0,
+      "years": 16
+    },
+    "BTC 2020-26, real-time (50, 50) | VPIN": {
+      "corr_min": 0.11547115797822895,
+      "corr_max": 0.15693125518770296,
+      "sign_flips": 0,
+      "years": 7
+    },
+    "BTC 2020-26, real-time (50, 50) | trailing volatility": {
+      "corr_min": 0.2720907167878096,
+      "corr_max": 0.3738303225191213,
+      "sign_flips": 0,
+      "years": 7
+    },
+    "BTC 2020-26, real-time (50, 50) | VPIN, true labels": {
+      "corr_min": -0.14971398136102657,
+      "corr_max": -0.03856983515846855,
+      "sign_flips": 0,
+      "years": 7
+    }
+  },
+  "ledger": {
+    "tests": 26,
+    "abs_z_gt_1_96": 20,
+    "bonferroni": 15,
+    "bh_q05": 20,
+    "hlz": 16,
+    "supported_bh": 17,
+    "supported_bonferroni": 13,
+    "significant_wrong_side": 3
+  }
+}

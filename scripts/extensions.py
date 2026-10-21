@@ -2,10 +2,10 @@
 
 E1  Bulk classification against the truth. Binance records the aggressor of every BTC
     trade, so we know the real buy volume that BVC tries to estimate.
-E2  Real-time VPIN out of sample. sigma, V and the CDF use only past data; the paper's
-    parameter choices are frozen and tested on IVE data after the paper (2011-08-16 on).
-E3  Is VPIN more than volatility? VPIN against trailing realized volatility (RV), in
+E2  Is VPIN more than volatility? VPIN against trailing realized volatility (RV), in
     regressions with controls, and VPIN from true vs bulk-classified volume (BTC).
+E3  Real-time VPIN out of sample. sigma, V and the CDF use only past data; the paper's
+    parameter choices are frozen and tested on IVE data after the paper (2011-08-16 on).
 E4  Crashes after the paper: when did real-time CDF(VPIN) cross 0.9?
 
 Usage: python scripts/extensions.py [--smoke]
@@ -28,7 +28,7 @@ from vpin.bars import bar_log_changes, time_bars
 from vpin.classify import tick_rule
 from vpin.data import load_btc_klines, load_btc_trades, load_ive_ticks
 from vpin.metric import cdf_expanding, vpin
-from vpin.realtime import daily_estimates, realtime_buckets, trading_minutes
+from vpin.realtime import daily_estimates, realtime_buckets, realtime_cdf, signals, trading_minutes
 
 ROOT = Path(__file__).resolve().parents[1]
 CFG = yaml.safe_load(open(ROOT / "configs" / "pipeline.yaml"))
@@ -36,23 +36,6 @@ MOVE = CFG["prediction"]["big_move"]
 
 
 # ---------- shared evaluation ----------
-
-def signals(buckets: pd.DataFrame, n: int, clock: np.ndarray) -> pd.DataFrame:
-    """Add returns, VPIN (BVC and, if present, true), trailing RV and bucket duration."""
-    b = buckets.copy()
-    b["ret"] = A.next_abs_return(b["end_price"].to_numpy())
-    b["vpin"] = vpin(b["buy"], b["sell"], b["volume"], n)
-    if "true_buy" in b:
-        b["vpin_true"] = vpin(b["true_buy"], b["true_sell"], b["volume"], n)
-    b["rv"] = b["ret"].rolling(n).mean()        # same window and timing as VPIN
-    end = np.searchsorted(clock["ts"], b["end_ts"].to_numpy(), side="right") - 1
-    b["duration"] = np.diff(clock["minutes"][end], prepend=np.nan)
-    return b
-
-
-def realtime_cdf(x: np.ndarray, min_history: int) -> np.ndarray:
-    return cdf_expanding(np.asarray(x, dtype=float), min_history)
-
 
 def metrics(b: pd.DataFrame, col: str, cdf: np.ndarray, mask: np.ndarray, reps: int = U.REPS) -> dict:
     """Section 5 statistics for one signal on the buckets selected by `mask`, each with its
@@ -103,7 +86,7 @@ def regression(b: pd.DataFrame, mask: np.ndarray, vpin_cols: list[str], n: int) 
     return out
 
 
-# ---------- E2 + E3 on IVE ----------
+# ---------- E3 (and E2) on IVE ----------
 
 def ive_experiments(out: Path, fig: Path, smoke: bool) -> dict:
     first = "2010-01-01" if smoke else CFG["ive"]["first_day"]
@@ -222,7 +205,7 @@ def crash_events(b: pd.DataFrame, bars: pd.DataFrame, days: list[str], market: s
     return rows
 
 
-# ---------- E1 + E3 on BTC ----------
+# ---------- E1 and E2 on BTC ----------
 
 def btc_experiments(out: Path, fig: Path, smoke: bool) -> dict:
     cfg = CFG["btc"]

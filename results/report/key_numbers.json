@@ -1325,5 +1325,1388 @@
       "alarm_share": 0.0874528657616892,
       "p_value_binomial": 0.0058417107572993
     }
+  ],
+  "windows": {
+    "BTC": {
+      "corr_50_250": [
+        0.00961432565992954,
+        0.16352186214695436
+      ],
+      "insurance_50_250": [
+        0.26579925650557623,
+        0.4769351055512119
+      ],
+      "true_positive_top_10_350": [
+        0.708029197080292,
+        0.8515625
+      ],
+      "true_positive_bottom_10_350": [
+        0.7709923664122137,
+        0.9382716049382716
+      ],
+      "windows": 10
+    },
+    "IVE": {
+      "corr_50_250": [
+        0.00466202728829896,
+        0.24066741790630064
+      ],
+      "insurance_50_250": [
+        0.19298245614035087,
+        0.7605042016806722
+      ],
+      "true_positive_top_10_350": [
+        0.22935779816513763,
+        0.7272727272727273
+      ],
+      "true_positive_bottom_10_350": [
+        0.15436241610738255,
+        0.5679012345679012
+      ],
+      "windows": 31
+    }
+  },
+  "simulation": {
+    "summary": [
+      {
+        "world": "0",
+        "version": "local",
+        "metric": "M1_tracking",
+        "mean": 0.9086214356394174,
+        "mc_se": 0.0009424221457761,
+        "p2.5": 0.8800309887272746,
+        "p97.5": 0.9333042259824118,
+        "reps": 200
+      },
+      {
+        "world": "0",
+        "version": "local",
+        "metric": "M4_predictive_corr",
+        "mean": 0.0425131771124106,
+        "mc_se": 0.0010166442676564,
+        "p2.5": 0.0152497020598477,
+        "p97.5": 0.0663397207705708,
+        "reps": 200
+      },
+      {
+        "world": "0",
+        "version": "paper",
+        "metric": "M1_tracking",
+        "mean": 0.8898637317655412,
+        "mc_se": 0.0018825678004708,
+        "p2.5": 0.8362124877241063,
+        "p97.5": 0.9238567676930868,
+        "reps": 200
+      },
+      {
+        "world": "0",
+        "version": "paper",
+        "metric": "M4_predictive_corr",
+        "mean": 0.0399161766658134,
+        "mc_se": 0.0010238454380738,
+        "p2.5": 0.0133179240988381,
+        "p97.5": 0.0649820005141148,
+        "reps": 200
+      },
+      {
+        "world": "0",
+        "version": "true",
+        "metric": "M1_tracking",
+        "mean": 0.9484960876491636,
+        "mc_se": 0.0005553951484784,
+        "p2.5": 0.9330905928094734,
+        "p97.5": 0.9614435112546186,
+        "reps": 200
+      },
+      {
+        "world": "0",
+        "version": "true",
+        "metric": "M4_predictive_corr",
+        "mean": 0.0426895619593575,
+        "mc_se": 0.0010266597372689,
+        "p2.5": 0.0167347958070325,
+        "p97.5": 0.0706320016011433,
+        "reps": 200
+      },
+      {
+        "world": "T",
+        "version": "local",
+        "metric": "M1_tracking",
+        "mean": 0.9649632670540862,
+        "mc_se": 0.0003707596431086,
+        "p2.5": 0.9540143403029436,
+        "p97.5": 0.9726654961534904,
+        "reps": 200
+      },
+      {
+        "world": "T",
+        "version": "local",
+        "metric": "M3_auc",
+        "mean": 0.9916350132606164,
+        "mc_se": 0.0003670611451581,
+        "p2.5": 0.9786971210668662,
+        "p97.5": 0.9981338879487056,
+        "reps": 200
+      },
+      {
+        "world": "T",
+        "version": "local",
+        "metric": "M4_predictive_corr",
+        "mean": 0.2535135844154745,
+        "mc_se": 0.0011337228443743,
+        "p2.5": 0.216195839636459,
+        "p97.5": 0.2821766134810111,
+        "reps": 200
+      },
+      {
+        "world": "T",
+        "version": "paper",
+        "metric": "M1_tracking",
+        "mean": 0.9528575203652526,
+        "mc_se": 0.0012767886634037,
+        "p2.5": 0.8990461888436504,
+        "p97.5": 0.9730181499715354,
+        "reps": 200
+      },
+      {
+        "world": "T",
+        "version": "paper",
+        "metric": "M3_auc",
+        "mean": 0.9910018400403904,
+        "mc_se": 0.0004778323536016,
+        "p2.5": 0.9716824921445508,
+        "p97.5": 0.9982885349273256,
+        "reps": 200
+      },
+      {
+        "world": "T",
+        "version": "paper",
+        "metric": "M4_predictive_corr",
+        "mean": 0.2508294296693334,
+        "mc_se": 0.0011842334517885,
+        "p2.5": 0.2130901267389769,
+        "p97.5": 0.2794929193615305,
+        "reps": 200
+      },
+      {
+        "world": "T",
+        "version": "true",
+        "metric": "M1_tracking",
+        "mean": 0.982232241997642,
+        "mc_se": 0.000184369933667,
+        "p2.5": 0.9763805245471296,
+        "p97.5": 0.986724064510766,
+        "reps": 200
+      },
+      {
+        "world": "T",
+        "version": "true",
+        "metric": "M3_auc",
+        "mean": 0.9961864063301994,
+        "mc_se": 0.0002125485712705,
+        "p2.5": 0.9879458156796624,
+        "p97.5": 0.9995028499112912,
+        "reps": 200
+      },
+      {
+        "world": "T",
+        "version": "true",
+        "metric": "M4_predictive_corr",
+        "mean": 0.2570783564756327,
+        "mc_se": 0.0011248344633541,
+        "p2.5": 0.2220532168166186,
+        "p97.5": 0.2852106728633123,
+        "reps": 200
+      },
+      {
+        "world": "TV",
+        "version": "local",
+        "metric": "M1_tracking",
+        "mean": 0.9115331409429416,
+        "mc_se": 0.0006586242931702,
+        "p2.5": 0.8950690893836545,
+        "p97.5": 0.9285444153051636,
+        "reps": 200
+      },
+      {
+        "world": "TV",
+        "version": "local",
+        "metric": "M2_false_alarm",
+        "mean": -0.3166429391603013,
+        "mc_se": 0.0007832313389598,
+        "p2.5": -0.3354918129915784,
+        "p97.5": -0.2933887842816209,
+        "reps": 200
+      },
+      {
+        "world": "TV",
+        "version": "local",
+        "metric": "M3_auc",
+        "mean": 0.8311450144475276,
+        "mc_se": 0.0017563414438899,
+        "p2.5": 0.7869075760265957,
+        "p97.5": 0.8856191108545886,
+        "reps": 200
+      },
+      {
+        "world": "TV",
+        "version": "local",
+        "metric": "M4_predictive_corr",
+        "mean": 0.208004722379343,
+        "mc_se": 0.0009732316021996,
+        "p2.5": 0.1821822284462592,
+        "p97.5": 0.238876209011809,
+        "reps": 200
+      },
+      {
+        "world": "TV",
+        "version": "local",
+        "metric": "M5_coef_toxicity",
+        "mean": 1.0278000086511974,
+        "mc_se": 0.0046449101136782,
+        "p2.5": 0.9049562248970188,
+        "p97.5": 1.1537769450847812,
+        "reps": 200
+      },
+      {
+        "world": "TV",
+        "version": "local",
+        "metric": "M5_coef_volatility",
+        "mean": -1.4561117360603866,
+        "mc_se": 0.0042493038953363,
+        "p2.5": -1.5482801406368905,
+        "p97.5": -1.3166421537013593,
+        "reps": 200
+      },
+      {
+        "world": "TV",
+        "version": "paper",
+        "metric": "M1_tracking",
+        "mean": 0.6896035807885277,
+        "mc_se": 0.0026761638191744,
+        "p2.5": 0.6099986339191661,
+        "p97.5": 0.7504128046662726,
+        "reps": 200
+      },
+      {
+        "world": "TV",
+        "version": "paper",
+        "metric": "M2_false_alarm",
+        "mean": -0.1387608281522532,
+        "mc_se": 0.003692087002628,
+        "p2.5": -0.229356301524527,
+        "p97.5": -0.0427920233626816,
+        "reps": 200
+      },
+      {
+        "world": "TV",
+        "version": "paper",
+        "metric": "M3_auc",
+        "mean": 0.946001840079394,
+        "mc_se": 0.0013594823020621,
+        "p2.5": 0.9020699018302444,
+        "p97.5": 0.975473231163003,
+        "reps": 200
+      },
+      {
+        "world": "TV",
+        "version": "paper",
+        "metric": "M4_predictive_corr",
+        "mean": 0.1635678105977902,
+        "mc_se": 0.0012421767841075,
+        "p2.5": 0.1327404176695992,
+        "p97.5": 0.2014214987955792,
+        "reps": 200
+      },
+      {
+        "world": "TV",
+        "version": "paper",
+        "metric": "M5_coef_toxicity",
+        "mean": 1.4822961450705687,
+        "mc_se": 0.0052942640730234,
+        "p2.5": 1.3263067991346866,
+        "p97.5": 1.619881586627291,
+        "reps": 200
+      },
+      {
+        "world": "TV",
+        "version": "paper",
+        "metric": "M5_coef_volatility",
+        "mean": 0.0069515026382194,
+        "mc_se": 0.0086223458207195,
+        "p2.5": -0.2179001542433048,
+        "p97.5": 0.2357317615282813,
+        "reps": 200
+      },
+      {
+        "world": "TV",
+        "version": "true",
+        "metric": "M1_tracking",
+        "mean": 0.982853315567864,
+        "mc_se": 0.0001592294702006,
+        "p2.5": 0.9782375295839096,
+        "p97.5": 0.9866666013555868,
+        "reps": 200
+      },
+      {
+        "world": "TV",
+        "version": "true",
+        "metric": "M2_false_alarm",
+        "mean": -0.3127813035012388,
+        "mc_se": 0.0007277038797776,
+        "p2.5": -0.3306772515711899,
+        "p97.5": -0.2882438990787318,
+        "reps": 200
+      },
+      {
+        "world": "TV",
+        "version": "true",
+        "metric": "M3_auc",
+        "mean": 0.9038221407422112,
+        "mc_se": 0.0012601307779414,
+        "p2.5": 0.8710120127692542,
+        "p97.5": 0.9383424374886172,
+        "reps": 200
+      },
+      {
+        "world": "TV",
+        "version": "true",
+        "metric": "M4_predictive_corr",
+        "mean": 0.2259947332155379,
+        "mc_se": 0.0009196573711193,
+        "p2.5": 0.2041663620194135,
+        "p97.5": 0.2525695487324956,
+        "reps": 200
+      },
+      {
+        "world": "TV",
+        "version": "true",
+        "metric": "M5_coef_toxicity",
+        "mean": 1.2388477721175868,
+        "mc_se": 0.0035866013993299,
+        "p2.5": 1.1355950517601092,
+        "p97.5": 1.3344500786071003,
+        "reps": 200
+      },
+      {
+        "world": "TV",
+        "version": "true",
+        "metric": "M5_coef_volatility",
+        "mean": -1.396741989360199,
+        "mc_se": 0.0038690913248971,
+        "p2.5": -1.4933806188851475,
+        "p97.5": -1.2829993087357832,
+        "reps": 200
+      },
+      {
+        "world": "V",
+        "version": "local",
+        "metric": "M1_tracking",
+        "mean": 0.8344519613735989,
+        "mc_se": 0.0017740777562183,
+        "p2.5": 0.780759334676435,
+        "p97.5": 0.8770640220517358,
+        "reps": 200
+      },
+      {
+        "world": "V",
+        "version": "local",
+        "metric": "M2_false_alarm",
+        "mean": -0.3012936595133435,
+        "mc_se": 0.0015755226949554,
+        "p2.5": -0.3375171389594005,
+        "p97.5": -0.2549298012340049,
+        "reps": 200
+      },
+      {
+        "world": "V",
+        "version": "local",
+        "metric": "M4_predictive_corr",
+        "mean": 0.0376442498972435,
+        "mc_se": 0.001012284265656,
+        "p2.5": 0.0090994214363703,
+        "p97.5": 0.0625515165611583,
+        "reps": 200
+      },
+      {
+        "world": "V",
+        "version": "paper",
+        "metric": "M1_tracking",
+        "mean": 0.0336666679208239,
+        "mc_se": 0.0049299374423877,
+        "p2.5": -0.1229059794676004,
+        "p97.5": 0.1688934880010969,
+        "reps": 200
+      },
+      {
+        "world": "V",
+        "version": "paper",
+        "metric": "M2_false_alarm",
+        "mean": 0.1177921732090622,
+        "mc_se": 0.0019577016384776,
+        "p2.5": 0.0524915618008536,
+        "p97.5": 0.1571411454728371,
+        "reps": 200
+      },
+      {
+        "world": "V",
+        "version": "paper",
+        "metric": "M4_predictive_corr",
+        "mean": -0.0070350569977218,
+        "mc_se": 0.0010798754107534,
+        "p2.5": -0.0356264250214032,
+        "p97.5": 0.0265456545267826,
+        "reps": 200
+      },
+      {
+        "world": "V",
+        "version": "true",
+        "metric": "M1_tracking",
+        "mean": 0.963805635444312,
+        "mc_se": 0.0004057080039784,
+        "p2.5": 0.9521243143684752,
+        "p97.5": 0.972816366178155,
+        "reps": 200
+      },
+      {
+        "world": "V",
+        "version": "true",
+        "metric": "M2_false_alarm",
+        "mean": -0.3151052683799999,
+        "mc_se": 0.001038004937387,
+        "p2.5": -0.3387697727332504,
+        "p97.5": -0.2792251378155354,
+        "reps": 200
+      },
+      {
+        "world": "V",
+        "version": "true",
+        "metric": "M4_predictive_corr",
+        "mean": 0.046039786106495,
+        "mc_se": 0.0009738615215277,
+        "p2.5": 0.0167100532545229,
+        "p97.5": 0.0725247213287745,
+        "reps": 200
+      }
+    ],
+    "decisions": {
+      "D1_true_vpin_tracks_informed_trading": {
+        "M1_T_true": 0.9822322419976421,
+        "rule": "M1 > 0.5",
+        "holds": true
+      },
+      "D2_false_alarms_from_volatility": {
+        "paper": {
+          "M2_V": 0.11779217320906228,
+          "mc_se": 0.001957701638477623,
+          "confounds_volatility": true
+        },
+        "true": {
+          "M2_V": -0.3151052683799999,
+          "mc_se": 0.0010380049373870568,
+          "confounds_volatility": false
+        },
+        "local": {
+          "M2_V": -0.3012936595133435,
+          "mc_se": 0.0015755226949554382,
+          "confounds_volatility": false
+        }
+      },
+      "D3_predictive_test_uninformative": {
+        "M4_V_paper": -0.007035056997721898,
+        "mc_se": 0.0010798754107534912,
+        "holds": false
+      },
+      "D4_local_sigma_is_an_improvement": {
+        "M2_V_paper": 0.11779217320906228,
+        "M2_V_local": -0.3012936595133435,
+        "AUC_T_paper": 0.9910018400403904,
+        "AUC_T_local": 0.9916350132606163,
+        "a_false_alarms_halved": true,
+        "b_detection_kept": true,
+        "holds": true
+      }
+    },
+    "decisions_tick": {
+      "D1_true_vpin_tracks_informed_trading": {
+        "M1_T_true": 0.9822322419976421,
+        "rule": "M1 > 0.5",
+        "holds": true
+      },
+      "D2_false_alarms_from_volatility": {
+        "paper": {
+          "M2_V": 0.12189513988295748,
+          "mc_se": 0.0018474179543840241,
+          "confounds_volatility": true
+        },
+        "true": {
+          "M2_V": -0.3151052683799999,
+          "mc_se": 0.0010380049373870568,
+          "confounds_volatility": false
+        },
+        "local": {
+          "M2_V": -0.2932751107902252,
+          "mc_se": 0.0017830874634596713,
+          "confounds_volatility": false
+        }
+      },
+      "D3_predictive_test_uninformative": {
+        "M4_V_paper": -0.007885089207281135,
+        "mc_se": 0.0010800053706797317,
+        "holds": false
+      },
+      "D4_local_sigma_is_an_improvement": {
+        "M2_V_paper": 0.12189513988295748,
+        "M2_V_local": -0.2932751107902252,
+        "AUC_T_paper": 0.9903909546155277,
+        "AUC_T_local": 0.991671504478633,
+        "a_false_alarms_halved": true,
+        "b_detection_kept": true,
+        "holds": true
+      }
+    },
+    "manifest": {
+      "prereg_sha256": "f8b78bbf4f94030791514a7f863d36503d66521c7466568dd27042d34730d489",
+      "reps": 200,
+      "days": 120,
+      "seconds": 19.439214042038657
+    }
+  },
+  "local_sigma": {
+    "predictive": [
+      {
+        "market": "BTC",
+        "buckets_per_day": 50,
+        "sample_length": 50,
+        "signal": "VPIN, standard BVC",
+        "corr": 0.1273417765623517,
+        "lift": 1.5270961297390973,
+        "tp_diff": 0.1516827092788056,
+        "corr_se": 0.0203177753080036,
+        "lift_se": 0.0757053442995382,
+        "tp_diff_se": 0.0193427192200318
+      },
+      {
+        "market": "BTC",
+        "buckets_per_day": 50,
+        "sample_length": 50,
+        "signal": "VPIN, local-sigma BVC (fix)",
+        "corr": 0.0506188415974561,
+        "lift": 1.270776522663776,
+        "tp_diff": 0.1218128395997732,
+        "corr_se": 0.016607562403986,
+        "lift_se": 0.0656914060672961,
+        "tp_diff_se": 0.0198467852303361
+      },
+      {
+        "market": "BTC",
+        "buckets_per_day": 50,
+        "sample_length": 50,
+        "signal": "trailing volatility",
+        "corr": 0.3592687276360438,
+        "lift": 3.3070854864037753,
+        "tp_diff": 0.3226354372431924,
+        "corr_se": 0.0320805245598987,
+        "lift_se": 0.281953327178765,
+        "tp_diff_se": 0.0215484841395785
+      },
+      {
+        "market": "BTC",
+        "buckets_per_day": 50,
+        "sample_length": 50,
+        "signal": "VPIN, true labels",
+        "corr": -0.122999932885914,
+        "lift": 0.608295837226222,
+        "tp_diff": -0.1276030830618127,
+        "corr_se": 0.0236551460690163,
+        "lift_se": 0.0815722575505713,
+        "tp_diff_se": 0.0324837157289789
+      },
+      {
+        "market": "BTC",
+        "buckets_per_day": 50,
+        "sample_length": 250,
+        "signal": "VPIN, standard BVC",
+        "corr": 0.1116074067808878,
+        "lift": 1.5217781636812249,
+        "tp_diff": 0.0734073429995464,
+        "corr_se": 0.0276517616803875,
+        "lift_se": 0.1165886714783377,
+        "tp_diff_se": 0.0257758963896104
+      },
+      {
+        "market": "BTC",
+        "buckets_per_day": 50,
+        "sample_length": 250,
+        "signal": "VPIN, local-sigma BVC (fix)",
+        "corr": 0.0211849479107869,
+        "lift": 1.1997758667775358,
+        "tp_diff": 0.0362081427307915,
+        "corr_se": 0.0284135508694939,
+        "lift_se": 0.1008586010990351,
+        "tp_diff_se": 0.023474050356366
+      },
+      {
+        "market": "BTC",
+        "buckets_per_day": 50,
+        "sample_length": 250,
+        "signal": "trailing volatility",
+        "corr": 0.3470623677571732,
+        "lift": 3.32182001159492,
+        "tp_diff": 0.1822748795262941,
+        "corr_se": 0.0322589185811434,
+        "lift_se": 0.3284929468658465,
+        "tp_diff_se": 0.0260348909978768
+      },
+      {
+        "market": "BTC",
+        "buckets_per_day": 50,
+        "sample_length": 250,
+        "signal": "VPIN, true labels",
+        "corr": -0.1606158239303849,
+        "lift": 0.4977901024859676,
+        "tp_diff": -0.1049046628044322,
+        "corr_se": 0.0266259386672983,
+        "lift_se": 0.0843892133220736,
+        "tp_diff_se": 0.0323277111718197
+      },
+      {
+        "market": "IVE 2011-26",
+        "buckets_per_day": 50,
+        "sample_length": 250,
+        "signal": "VPIN, standard BVC",
+        "corr": 0.092032355024092,
+        "lift": 1.5672640502364572,
+        "tp_diff": 0.0382291584741664,
+        "corr_se": 0.0313586343424705,
+        "lift_se": 0.198889358713836,
+        "tp_diff_se": 0.0223600121220026
+      },
+      {
+        "market": "IVE 2011-26",
+        "buckets_per_day": 50,
+        "sample_length": 250,
+        "signal": "VPIN, local-sigma BVC (fix)",
+        "corr": 0.0072482045075728,
+        "lift": 1.2953572251814176,
+        "tp_diff": 0.069732438793973,
+        "corr_se": 0.0230943436254856,
+        "lift_se": 0.2448641919237444,
+        "tp_diff_se": 0.0209918242725331
+      },
+      {
+        "market": "IVE 2011-26",
+        "buckets_per_day": 50,
+        "sample_length": 250,
+        "signal": "trailing volatility",
+        "corr": 0.2422647185425159,
+        "lift": 2.7636773990800787,
+        "tp_diff": 0.2189970312590954,
+        "corr_se": 0.0180344145854796,
+        "lift_se": 0.281184089889089,
+        "tp_diff_se": 0.0183954997456547
+      }
+    ],
+    "regressions": [
+      {
+        "market": "BTC",
+        "choice": "(50, 50)",
+        "signal": "vpin",
+        "n_obs": 119570,
+        "r2_vpin_alone": 0.0220978300678985,
+        "delta_r2_se": 0.0004603071768674,
+        "delta_r2_lo": 0.0002999155415137,
+        "delta_r2_hi": 0.0020784843907019,
+        "r2_controls": 0.1561198080748779,
+        "r2_controls_plus_vpin": 0.1571096904954051,
+        "delta_r2": 0.0009898824205272,
+        "beta_vpin": -0.0374857522536031,
+        "t_vpin_hac": -7.727229230164416,
+        "beta_ln_rv": 0.379826685206761,
+        "t_ln_rv_hac": 44.57593738719073
+      },
+      {
+        "market": "BTC",
+        "choice": "(50, 50)",
+        "signal": "vpin_local",
+        "n_obs": 119570,
+        "r2_vpin_alone": 0.0041800148441545,
+        "delta_r2_se": 0.0004973083479315,
+        "delta_r2_lo": 8.277384373672758e-05,
+        "delta_r2_hi": 0.0019464984420247,
+        "r2_controls": 0.1561198080748779,
+        "r2_controls_plus_vpin": 0.1568705423688272,
+        "delta_r2": 0.0007507342939493,
+        "beta_vpin": -0.030320460737411,
+        "t_vpin_hac": -4.3155925795749885,
+        "beta_ln_rv": 0.3700200060293311,
+        "t_ln_rv_hac": 42.55842257671258
+      },
+      {
+        "market": "BTC",
+        "choice": "(50, 50)",
+        "signal": "vpin_true",
+        "n_obs": 119570,
+        "r2_vpin_alone": 0.0112564169978129,
+        "delta_r2_se": 0.000614527593667,
+        "delta_r2_lo": 1.509475510888536e-06,
+        "delta_r2_hi": 0.0020358431146402,
+        "r2_controls": 0.1561198080748779,
+        "r2_controls_plus_vpin": 0.1564819380175092,
+        "delta_r2": 0.0003621299426312,
+        "beta_vpin": -0.0202957737199559,
+        "t_vpin_hac": -2.7414937959710235,
+        "beta_ln_rv": 0.3601682215266719,
+        "t_ln_rv_hac": 34.222419343474556
+      },
+      {
+        "market": "BTC",
+        "choice": "(50, 250)",
+        "signal": "vpin",
+        "n_obs": 119371,
+        "r2_vpin_alone": 0.0217015046639947,
+        "delta_r2_se": 0.0002232938604532,
+        "delta_r2_lo": 4.102787687865206e-07,
+        "delta_r2_hi": 0.000818854646276,
+        "r2_controls": 0.1515389775830997,
+        "r2_controls_plus_vpin": 0.1515611819659914,
+        "delta_r2": 2.2204382891688468e-05,
+        "beta_vpin": -0.0052365196766721,
+        "t_vpin_hac": -0.4792522882956281,
+        "beta_ln_rv": 0.3497160223560576,
+        "t_ln_rv_hac": 30.074990479417252
+      },
+      {
+        "market": "BTC",
+        "choice": "(50, 250)",
+        "signal": "vpin_local",
+        "n_obs": 119371,
+        "r2_vpin_alone": 0.0030490981728716,
+        "delta_r2_se": 0.0006397789439913,
+        "delta_r2_lo": 2.559746814873032e-07,
+        "delta_r2_hi": 0.00234791508233,
+        "r2_controls": 0.1515389775830997,
+        "r2_controls_plus_vpin": 0.1517703299933854,
+        "delta_r2": 0.0002313524102857,
+        "beta_vpin": 0.0160241491202426,
+        "t_vpin_hac": 1.0104564823921585,
+        "beta_ln_rv": 0.347913902119983,
+        "t_ln_rv_hac": 26.562314987329433
+      },
+      {
+        "market": "BTC",
+        "choice": "(50, 250)",
+        "signal": "vpin_true",
+        "n_obs": 119371,
+        "r2_vpin_alone": 0.0176960268722127,
+        "delta_r2_se": 0.0005129216751624,
+        "delta_r2_lo": 5.189346562378683e-07,
+        "delta_r2_hi": 0.0018164808658864,
+        "r2_controls": 0.1515389775830997,
+        "r2_controls_plus_vpin": 0.1518548149513269,
+        "delta_r2": 0.0003158373682271,
+        "beta_vpin": 0.0199096155642136,
+        "t_vpin_hac": 1.263759269797998,
+        "beta_ln_rv": 0.3569911407340206,
+        "t_ln_rv_hac": 19.15591912965188
+      },
+      {
+        "market": "IVE 2011-26",
+        "choice": "(50, 250)",
+        "signal": "vpin",
+        "n_obs": 155892,
+        "r2_vpin_alone": 0.0166204848573937,
+        "delta_r2_se": 0.0010845894508607,
+        "delta_r2_lo": 0.0005844018186709,
+        "delta_r2_hi": 0.0045843844696983,
+        "r2_controls": 0.0828095436832248,
+        "r2_controls_plus_vpin": 0.0853226566230601,
+        "delta_r2": 0.0025131129398353,
+        "beta_vpin": 0.0547757107912625,
+        "t_vpin_hac": 6.997713655700016,
+        "beta_ln_rv": 0.2313672816452179,
+        "t_ln_rv_hac": 16.988919638736036
+      },
+      {
+        "market": "IVE 2011-26",
+        "choice": "(50, 250)",
+        "signal": "vpin_local",
+        "n_obs": 155892,
+        "r2_vpin_alone": 0.001785934455077,
+        "delta_r2_se": 0.0009676031279388,
+        "delta_r2_lo": 0.0010314308791959,
+        "delta_r2_hi": 0.0047310300669382,
+        "r2_controls": 0.0828095436832248,
+        "r2_controls_plus_vpin": 0.0857082097571774,
+        "delta_r2": 0.0028986660739526,
+        "beta_vpin": 0.0563239013757408,
+        "t_vpin_hac": 8.28186099440253,
+        "beta_ln_rv": 0.2503857592446675,
+        "t_ln_rv_hac": 17.177392396718673
+      }
+    ],
+    "tracking": {
+      "BTC_50_50": {
+        "corr_local_true": {
+          "value": 0.46970670994425473,
+          "se": 0.02653771899891042,
+          "lo": 0.41628276488962973,
+          "hi": 0.5187011491681766
+        },
+        "corr_standard_true": {
+          "value": 0.3875588941421464,
+          "se": 0.03655316497976396,
+          "lo": 0.3160289067562052,
+          "hi": 0.45349958257404493
+        },
+        "difference": {
+          "value": 0.08214781580210834,
+          "se": 0.019453322440726645,
+          "lo": 0.04216552334401949,
+          "hi": 0.12027099157926276
+        }
+      },
+      "BTC_50_250": {
+        "corr_local_true": {
+          "value": 0.40169438657537937,
+          "se": 0.0580817654099068,
+          "lo": 0.2802899794371642,
+          "hi": 0.511413843764076
+        },
+        "corr_standard_true": {
+          "value": 0.2662142120948661,
+          "se": 0.0678658699991304,
+          "lo": 0.13375150787798953,
+          "hi": 0.39118011273635545
+        },
+        "difference": {
+          "value": 0.13548017448051325,
+          "se": 0.034022559129082156,
+          "lo": 0.06552779426390472,
+          "hi": 0.20391721146941574
+        }
+      }
+    }
+  },
+  "inference": {
+    "power": {
+      "corr_se_50_250": 0.04749784505148885,
+      "mde_80pct_power": 0.13299396614416878
+    },
+    "placebo": {
+      "IVE 2009-11, paper's method (50, 250)": {
+        "real_corr": 0.07784182943166362,
+        "placebo_corr_mean": 0.07839195561631604,
+        "placebo_corr_sd": 0.0018152656460596378,
+        "real_lift": 2.0413793103448277,
+        "placebo_lift_mean": 2.0193103448275864,
+        "placebo_share_of_real_corr": 1.0070672309305804,
+        "direction_carries_little": true
+      },
+      "IVE 2011-26, real-time (50, 250)": {
+        "real_corr": 0.09203235502409282,
+        "placebo_corr_mean": 0.08973215990700456,
+        "placebo_corr_sd": 0.000606691724728126,
+        "real_lift": 1.5672640502364572,
+        "placebo_lift_mean": 1.5782576155605748,
+        "placebo_share_of_real_corr": 0.9750066689428288,
+        "direction_carries_little": true
+      },
+      "BTC 2020-26, real-time (50, 50)": {
+        "real_corr": 0.12734177656234855,
+        "placebo_corr_mean": 0.1282487181242115,
+        "placebo_corr_sd": 0.0013768078507646086,
+        "real_lift": 1.5270961297390973,
+        "placebo_lift_mean": 1.5306352372219902,
+        "placebo_share_of_real_corr": 1.007122105457818,
+        "direction_carries_little": true
+      }
+    },
+    "loyo": {
+      "IVE 2011-26, real-time (50, 250) | VPIN": {
+        "corr_min": 0.06377731388348822,
+        "corr_max": 0.09947377647223626,
+        "sign_flips": 0,
+        "years": 16
+      },
+      "IVE 2011-26, real-time (50, 250) | trailing volatility": {
+        "corr_min": 0.2212612563038723,
+        "corr_max": 0.254377130737761,
+        "sign_flips": 0,
+        "years": 16
+      },
+      "BTC 2020-26, real-time (50, 50) | VPIN": {
+        "corr_min": 0.11547115797822895,
+        "corr_max": 0.15693125518770296,
+        "sign_flips": 0,
+        "years": 7
+      },
+      "BTC 2020-26, real-time (50, 50) | trailing volatility": {
+        "corr_min": 0.2720907167878096,
+        "corr_max": 0.3738303225191213,
+        "sign_flips": 0,
+        "years": 7
+      },
+      "BTC 2020-26, real-time (50, 50) | VPIN, true labels": {
+        "corr_min": -0.14971398136102657,
+        "corr_max": -0.03856983515846855,
+        "sign_flips": 0,
+        "years": 7
+      }
+    },
+    "ledger": {
+      "tests": 26,
+      "abs_z_gt_1_96": 20,
+      "bonferroni": 15,
+      "bh_q05": 20,
+      "hlz": 16,
+      "supported_bh": 17,
+      "supported_bonferroni": 13,
+      "significant_wrong_side": 3
+    }
+  },
+  "ledger": [
+    {
+      "area": "Reproduction IVE",
+      "claim": "corr(ln VPIN, next |r|) > 0 at (50, 250)",
+      "estimate": 0.0778418294316635,
+      "null": 0.0,
+      "se": 0.0474978450514888,
+      "z": 1.6388497067031365,
+      "direction": "+",
+      "role": "test",
+      "note": NaN,
+      "p_two_sided": 0.101244564135747,
+      "bonferroni": false,
+      "bh_q05": false,
+      "hlz_abs_t_gt_3": false,
+      "supported_bh": false,
+      "supported_bonferroni": false
+    },
+    {
+      "area": "Reproduction IVE",
+      "claim": "corr at (50, 250) equals the paper's 0.40",
+      "estimate": 0.0778418294316635,
+      "null": 0.4,
+      "se": 0.0474978450514888,
+      "z": -6.782584982942047,
+      "direction": "\u2260",
+      "role": "test",
+      "note": NaN,
+      "p_two_sided": 1.180443802739196e-11,
+      "bonferroni": true,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": true,
+      "supported_bh": true,
+      "supported_bonferroni": true
+    },
+    {
+      "area": "Reproduction IVE",
+      "claim": "lift > 1 at (50, 250)",
+      "estimate": 2.0413793103448277,
+      "null": 1.0,
+      "se": 0.3375983160745418,
+      "z": 3.0846697414062065,
+      "direction": "+",
+      "role": "test",
+      "note": NaN,
+      "p_two_sided": 0.002037782925888,
+      "bonferroni": false,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": true,
+      "supported_bh": true,
+      "supported_bonferroni": false
+    },
+    {
+      "area": "Reproduction IVE",
+      "claim": "low VPIN \u2192 next |r| < 0.25% more than 90% of the time",
+      "estimate": 0.9610212765957448,
+      "null": 0.9,
+      "se": 0.0054183964452235,
+      "z": 11.261870040819344,
+      "direction": "+",
+      "role": "test",
+      "note": NaN,
+      "p_two_sided": 2.0241712369464242e-29,
+      "bonferroni": true,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": true,
+      "supported_bh": true,
+      "supported_bonferroni": true
+    },
+    {
+      "area": "Reproduction IVE",
+      "claim": "true positives top \u2212 bottom quartile > 0 at (50, 250)",
+      "estimate": 0.1104107744107744,
+      "null": 0.0,
+      "se": 0.0443871487659068,
+      "z": 2.4874491261664353,
+      "direction": "+",
+      "role": "test",
+      "note": NaN,
+      "p_two_sided": 0.0128662854071796,
+      "bonferroni": false,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": false,
+      "supported_bh": true,
+      "supported_bonferroni": false
+    },
+    {
+      "area": "Reproduction IVE",
+      "claim": "true positives top \u2212 bottom quartile > 0 at (10, 350)",
+      "estimate": 0.1584184341450641,
+      "null": 0.0,
+      "se": 0.131210660571271,
+      "z": 1.2073594741108276,
+      "direction": "+",
+      "role": "test",
+      "note": NaN,
+      "p_two_sided": 0.2272937354869999,
+      "bonferroni": false,
+      "bh_q05": false,
+      "hlz_abs_t_gt_3": false,
+      "supported_bh": false,
+      "supported_bonferroni": false
+    },
+    {
+      "area": "Ext. 1 BTC",
+      "claim": "BVC gets the bar's direction right more than half the time",
+      "estimate": 0.8212925392730585,
+      "null": 0.5,
+      "se": 0.0017909921847272,
+      "z": 179.39360205639144,
+      "direction": "+",
+      "role": "test",
+      "note": NaN,
+      "p_two_sided": 0.0,
+      "bonferroni": true,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": true,
+      "supported_bh": true,
+      "supported_bonferroni": true
+    },
+    {
+      "area": "Ext. 1 BTC",
+      "claim": "BVC inflates bucket imbalance (ratio > 1)",
+      "estimate": 2.1928885704831904,
+      "null": 1.0,
+      "se": 0.0464846280850399,
+      "z": 25.662000958701775,
+      "direction": "+",
+      "role": "test",
+      "note": NaN,
+      "p_two_sided": 3.1061263426650893e-145,
+      "bonferroni": true,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": true,
+      "supported_bh": true,
+      "supported_bonferroni": true
+    },
+    {
+      "area": "Ext. 1 BTC",
+      "claim": "BVC imbalance follows the same bucket's |r| more than the true one",
+      "estimate": 0.1539558754915903,
+      "null": 0.0,
+      "se": 0.0148833731212581,
+      "z": 10.344152111035449,
+      "direction": "+",
+      "role": "test",
+      "note": NaN,
+      "p_two_sided": 4.448364139428263e-25,
+      "bonferroni": true,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": true,
+      "supported_bh": true,
+      "supported_bonferroni": true
+    },
+    {
+      "area": "Ext. 2 BTC",
+      "claim": "BVC VPIN predicts next |r| better than true-label VPIN",
+      "estimate": 0.2511940698799663,
+      "null": 0.0,
+      "se": 0.0289598526241535,
+      "z": 8.673872520693049,
+      "direction": "+",
+      "role": "test",
+      "note": NaN,
+      "p_two_sided": 4.1766787804452395e-18,
+      "bonferroni": true,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": true,
+      "supported_bh": true,
+      "supported_bonferroni": true
+    },
+    {
+      "area": "Ext. 2 BTC",
+      "claim": "trailing volatility predicts next |r| better than BVC VPIN",
+      "estimate": 0.2354837426823411,
+      "null": 0.0,
+      "se": 0.0228888921192406,
+      "z": 10.288123228314342,
+      "direction": "+",
+      "role": "test",
+      "note": NaN,
+      "p_two_sided": 7.971492243371373e-25,
+      "bonferroni": true,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": true,
+      "supported_bh": true,
+      "supported_bonferroni": true
+    },
+    {
+      "area": "Ext. 2 regression",
+      "claim": "BTC (50, 50) 2020-01..2026-09: vpin adds to volatility controls (Newey\u2013West t)",
+      "estimate": -0.0374857522536031,
+      "null": 0.0,
+      "se": NaN,
+      "z": -7.727229230164416,
+      "direction": "+",
+      "role": "test",
+      "note": "z is the Newey\u2013West t",
+      "p_two_sided": 1.0991262190398088e-14,
+      "bonferroni": true,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": true,
+      "supported_bh": false,
+      "supported_bonferroni": false
+    },
+    {
+      "area": "Ext. 2 regression",
+      "claim": "BTC (50, 50) 2020-01..2026-09: vpin_true adds to volatility controls (Newey\u2013West t)",
+      "estimate": -0.0202957737199559,
+      "null": 0.0,
+      "se": NaN,
+      "z": -2.7414937959710235,
+      "direction": "+",
+      "role": "test",
+      "note": "z is the Newey\u2013West t",
+      "p_two_sided": 0.0061160515746545,
+      "bonferroni": false,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": false,
+      "supported_bh": false,
+      "supported_bonferroni": false
+    },
+    {
+      "area": "Ext. 2 regression",
+      "claim": "IVE paper (50, 250) out-of-sample: vpin adds to volatility controls (Newey\u2013West t)",
+      "estimate": 0.0547757107912625,
+      "null": 0.0,
+      "se": NaN,
+      "z": 6.997713655700016,
+      "direction": "+",
+      "role": "test",
+      "note": "z is the Newey\u2013West t",
+      "p_two_sided": 2.601731327113051e-12,
+      "bonferroni": true,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": true,
+      "supported_bh": true,
+      "supported_bonferroni": true
+    },
+    {
+      "area": "Out of sample IVE 2011-26",
+      "claim": "VPIN corr with next |r| > 0",
+      "estimate": 0.092032355024092,
+      "null": 0.0,
+      "se": 0.0313586343424705,
+      "z": 2.934833003854641,
+      "direction": "+",
+      "role": "test",
+      "note": NaN,
+      "p_two_sided": 0.003337272430643,
+      "bonferroni": false,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": false,
+      "supported_bh": true,
+      "supported_bonferroni": false
+    },
+    {
+      "area": "Out of sample IVE 2011-26",
+      "claim": "VPIN lift > 1",
+      "estimate": 1.5672640502364572,
+      "null": 1.0,
+      "se": 0.198889358713836,
+      "z": 2.8521588782064624,
+      "direction": "+",
+      "role": "test",
+      "note": NaN,
+      "p_two_sided": 0.0043423391053774,
+      "bonferroni": false,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": false,
+      "supported_bh": true,
+      "supported_bonferroni": false
+    },
+    {
+      "area": "Out of sample IVE 2011-26",
+      "claim": "VPIN true positives top \u2212 bottom > 0",
+      "estimate": 0.0382291584741664,
+      "null": 0.0,
+      "se": 0.0223600121220026,
+      "z": 1.7097109905655332,
+      "direction": "+",
+      "role": "test",
+      "note": NaN,
+      "p_two_sided": 0.0873193293791635,
+      "bonferroni": false,
+      "bh_q05": false,
+      "hlz_abs_t_gt_3": false,
+      "supported_bh": false,
+      "supported_bonferroni": false
+    },
+    {
+      "area": "Out of sample IVE 2011-26",
+      "claim": "trailing volatility predicts next |r| better than VPIN",
+      "estimate": 0.1502323635184239,
+      "null": 0.0,
+      "se": 0.0232026023045752,
+      "z": 6.474806642218737,
+      "direction": "+",
+      "role": "test",
+      "note": NaN,
+      "p_two_sided": 9.493343103775029e-11,
+      "bonferroni": true,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": true,
+      "supported_bh": true,
+      "supported_bonferroni": true
+    },
+    {
+      "area": "Crashes",
+      "claim": "VPIN alarm beats the volatility alarm on the same IVE falls (exact McNemar)",
+      "estimate": 2.0,
+      "null": 0.0,
+      "se": NaN,
+      "z": 0.6744897501960817,
+      "direction": "+",
+      "role": "test",
+      "note": "one-sided p = 0.250; z = normal quantile of p",
+      "p_two_sided": 0.5,
+      "bonferroni": false,
+      "bh_q05": false,
+      "hlz_abs_t_gt_3": false,
+      "supported_bh": false,
+      "supported_bonferroni": false
+    },
+    {
+      "area": "Ext. 3 simulation",
+      "claim": "D2: paper VPIN raises false alarms in volatile blocks",
+      "estimate": 0.1177921732090622,
+      "null": 0.0,
+      "se": 0.0019577016384776,
+      "z": 60.16860327126332,
+      "direction": "+",
+      "role": "test",
+      "note": "Monte Carlo s.e.",
+      "p_two_sided": 0.0,
+      "bonferroni": true,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": true,
+      "supported_bh": true,
+      "supported_bonferroni": true
+    },
+    {
+      "area": "Ext. 3 simulation",
+      "claim": "D3: paper VPIN predicts next |r| where informed trading never changes",
+      "estimate": -0.0070350569977218,
+      "null": 0.0,
+      "se": 0.0010798754107534,
+      "z": -6.514693202258516,
+      "direction": "+",
+      "role": "test",
+      "note": "Monte Carlo s.e.",
+      "p_two_sided": 7.283837604661544e-11,
+      "bonferroni": true,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": true,
+      "supported_bh": false,
+      "supported_bonferroni": false
+    },
+    {
+      "area": "Ext. 3 simulation",
+      "claim": "D4: local-sigma fix has fewer false alarms than the paper's VPIN",
+      "estimate": 0.4190858327224058,
+      "null": 0.0,
+      "se": 0.0023220062167197,
+      "z": 180.4843715338725,
+      "direction": "+",
+      "role": "test",
+      "note": "paired over replications",
+      "p_two_sided": 0.0,
+      "bonferroni": true,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": true,
+      "supported_bh": true,
+      "supported_bonferroni": true
+    },
+    {
+      "area": "Ext. 4 fix (D5)",
+      "claim": "local-sigma VPIN tracks true-label VPIN better than standard BVC (BTC)",
+      "estimate": 0.0821478158021083,
+      "null": 0.0,
+      "se": 0.0194533224407266,
+      "z": 4.222816747751386,
+      "direction": "+",
+      "role": "test",
+      "note": NaN,
+      "p_two_sided": 2.4126798077415615e-05,
+      "bonferroni": true,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": true,
+      "supported_bh": true,
+      "supported_bonferroni": true
+    },
+    {
+      "area": "Placebo",
+      "claim": "IVE 2009-11, paper's method (50, 250): real VPIN predicts better than direction-shuffled VPIN",
+      "estimate": -0.0005501261846524,
+      "null": 0.0,
+      "se": 0.0018152656460596,
+      "z": -0.3030554706120091,
+      "direction": "+",
+      "role": "test",
+      "note": "se = spread of the 20 placebo draws",
+      "p_two_sided": 0.7618475885755196,
+      "bonferroni": false,
+      "bh_q05": false,
+      "hlz_abs_t_gt_3": false,
+      "supported_bh": false,
+      "supported_bonferroni": false
+    },
+    {
+      "area": "Placebo",
+      "claim": "IVE 2011-26, real-time (50, 250): real VPIN predicts better than direction-shuffled VPIN",
+      "estimate": 0.0023001951170882,
+      "null": 0.0,
+      "se": 0.0006066917247281,
+      "z": 3.7913738119949416,
+      "direction": "+",
+      "role": "test",
+      "note": "se = spread of the 20 placebo draws",
+      "p_two_sided": 0.0001498162629797,
+      "bonferroni": true,
+      "bh_q05": true,
+      "hlz_abs_t_gt_3": true,
+      "supported_bh": true,
+      "supported_bonferroni": true
+    },
+    {
+      "area": "Placebo",
+      "claim": "BTC 2020-26, real-time (50, 50): real VPIN predicts better than direction-shuffled VPIN",
+      "estimate": -0.0009069415618629,
+      "null": 0.0,
+      "se": 0.0013768078507646,
+      "z": -0.6587277675380034,
+      "direction": "+",
+      "role": "test",
+      "note": "se = spread of the 20 placebo draws",
+      "p_two_sided": 0.5100705986782235,
+      "bonferroni": false,
+      "bh_q05": false,
+      "hlz_abs_t_gt_3": false,
+      "supported_bh": false,
+      "supported_bonferroni": false
+    }
   ]
 }

@@ -43,3 +43,8 @@ Each row gives what we changed, why, and how it affects the comparison. The numb
 | Table 1 precision | Paired bootstrap over months: both samples draw the same months; "P(volume lower)" is the share of replications in which volume time has the lower statistic | Tests the paper's comparison within our data, without mixing sources |
 | BTC "day" | UTC calendar day | BTC trades 24/7 |
 | BTC trade-day buckets | 1/250 of the trailing average daily volume | Enough buckets inside a single day to compare classifiers |
+| All-windows analysis | The paper's in-sample method inside every two-year window starting each January and July; σ from log price changes | BTC's price varies about 15-fold, so dollar changes are not comparable within a window; exploratory, run before the pre-registration |
+| Known-answer simulation | The paper's PIN model plus a linear-impact price; all parameters, worlds and decision rules in `docs/preregistration.md` | Closes the gap in the paper's Monte Carlo (no prices, no bulk classification) |
+| Local-σ bulk classification (our fix) | σ = standard deviation of one-minute log changes over the previous day (1,440 bars for BTC, 390 for IVE) | Measures each price change against current volatility; tested in the simulation (rule D4) before it was applied to real data (rule D5) |
+| Direction placebo | Each one-minute bar keeps \|2f − 1\| · volume with a random sign, 20 seeds | Separates the direction of order flow from the size of price moves |
+| Ledger | Benjamini–Hochberg and Bonferroni over the "test" rows; a claim is supported only if significant and on the claimed side | Multiple testing across all our claims |

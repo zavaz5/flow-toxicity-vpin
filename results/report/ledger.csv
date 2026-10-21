@@ -1,0 +1,27 @@
+area,claim,estimate,null,se,z,direction,role,note,p_two_sided,bonferroni,bh_q05,hlz_abs_t_gt_3,supported_bh,supported_bonferroni
+Reproduction IVE,"corr(ln VPIN, next |r|) > 0 at (50, 250)",0.07784182943166353,0.0,0.04749784505148885,1.6388497067031365,+,test,,0.10124456413574705,False,False,False,False,False
+Reproduction IVE,"corr at (50, 250) equals the paper's 0.40",0.07784182943166353,0.4,0.04749784505148885,-6.782584982942047,≠,test,,1.1804438027391959e-11,True,True,True,True,True
+Reproduction IVE,"lift > 1 at (50, 250)",2.0413793103448277,1.0,0.3375983160745418,3.0846697414062065,+,test,,0.0020377829258880304,False,True,True,True,False
+Reproduction IVE,low VPIN → next |r| < 0.25% more than 90% of the time,0.9610212765957447,0.9,0.005418396445223506,11.261870040819343,+,test,,2.0241712369464242e-29,True,True,True,True,True
+Reproduction IVE,"true positives top − bottom quartile > 0 at (50, 250)",0.11041077441077443,0.0,0.0443871487659068,2.4874491261664353,+,test,,0.012866285407179658,False,True,False,True,False
+Reproduction IVE,"true positives top − bottom quartile > 0 at (10, 350)",0.15841843414506412,0.0,0.13121066057127106,1.2073594741108276,+,test,,0.22729373548699994,False,False,False,False,False
+Ext. 1 BTC,BVC gets the bar's direction right more than half the time,0.8212925392730585,0.5,0.0017909921847272,179.39360205639144,+,test,,0.0,True,True,True,True,True
+Ext. 1 BTC,BVC inflates bucket imbalance (ratio > 1),2.1928885704831904,1.0,0.04648462808503994,25.662000958701775,+,test,,3.1061263426650897e-145,True,True,True,True,True
+Ext. 1 BTC,BVC imbalance follows the same bucket's |r| more than the true one,0.15395587549159034,0.0,0.014883373121258113,10.344152111035447,+,test,,4.448364139428263e-25,True,True,True,True,True
+Ext. 2 BTC,BVC VPIN predicts next |r| better than true-label VPIN,0.25119406987996634,0.0,0.02895985262415359,8.673872520693049,+,test,,4.1766787804452395e-18,True,True,True,True,True
+Ext. 2 BTC,trailing volatility predicts next |r| better than BVC VPIN,0.23548374268234118,0.0,0.022888892119240684,10.288123228314342,+,test,,7.971492243371373e-25,True,True,True,True,True
+Ext. 2 regression,"BTC (50, 50) 2020-01..2026-09: vpin adds to volatility controls (Newey–West t)",-0.0374857522536031,0.0,,-7.727229230164416,+,test,z is the Newey–West t,1.0991262190398087e-14,True,True,True,False,False
+Ext. 2 regression,"BTC (50, 50) 2020-01..2026-09: vpin_true adds to volatility controls (Newey–West t)",-0.0202957737199559,0.0,,-2.7414937959710235,+,test,z is the Newey–West t,0.006116051574654528,False,True,False,False,False
+Ext. 2 regression,"IVE paper (50, 250) out-of-sample: vpin adds to volatility controls (Newey–West t)",0.0547757107912625,0.0,,6.997713655700016,+,test,z is the Newey–West t,2.6017313271130507e-12,True,True,True,True,True
+Out of sample IVE 2011-26,VPIN corr with next |r| > 0,0.092032355024092,0.0,0.0313586343424705,2.934833003854641,+,test,,0.003337272430643032,False,True,False,True,False
+Out of sample IVE 2011-26,VPIN lift > 1,1.5672640502364572,1.0,0.198889358713836,2.8521588782064624,+,test,,0.004342339105377489,False,True,False,True,False
+Out of sample IVE 2011-26,VPIN true positives top − bottom > 0,0.0382291584741664,0.0,0.0223600121220026,1.7097109905655332,+,test,,0.08731932937916352,False,False,False,False,False
+Out of sample IVE 2011-26,trailing volatility predicts next |r| better than VPIN,0.1502323635184239,0.0,0.023202602304575295,6.474806642218737,+,test,,9.49334310377503e-11,True,True,True,True,True
+Crashes,VPIN alarm beats the volatility alarm on the same IVE falls (exact McNemar),2.0,0.0,,0.6744897501960817,+,test,one-sided p = 0.250; z = normal quantile of p,0.5,False,False,False,False,False
+Ext. 3 simulation,D2: paper VPIN raises false alarms in volatile blocks,0.11779217320906224,0.0,0.0019577016384776224,60.16860327126332,+,test,Monte Carlo s.e.,0.0,True,True,True,True,True
+Ext. 3 simulation,D3: paper VPIN predicts next |r| where informed trading never changes,-0.007035056997721878,0.0,0.001079875410753489,-6.514693202258516,+,test,Monte Carlo s.e.,7.283837604661544e-11,True,True,True,False,False
+Ext. 3 simulation,D4: local-sigma fix has fewer false alarms than the paper's VPIN,0.4190858327224058,0.0,0.0023220062167197326,180.48437153387246,+,test,paired over replications,0.0,True,True,True,True,True
+Ext. 4 fix (D5),local-sigma VPIN tracks true-label VPIN better than standard BVC (BTC),0.08214781580210834,0.0,0.019453322440726645,4.222816747751386,+,test,,2.4126798077415615e-05,True,True,True,True,True
+Placebo,"IVE 2009-11, paper's method (50, 250): real VPIN predicts better than direction-shuffled VPIN",-0.0005501261846524164,0.0,0.0018152656460596378,-0.30305547061200916,+,test,se = spread of the 20 placebo draws,0.7618475885755196,False,False,False,False,False
+Placebo,"IVE 2011-26, real-time (50, 250): real VPIN predicts better than direction-shuffled VPIN",0.0023001951170882606,0.0,0.000606691724728126,3.7913738119949416,+,test,se = spread of the 20 placebo draws,0.00014981626297977122,True,True,True,True,True
+Placebo,"BTC 2020-26, real-time (50, 50): real VPIN predicts better than direction-shuffled VPIN",-0.0009069415618629673,0.0,0.0013768078507646086,-0.6587277675380034,+,test,se = spread of the 20 placebo draws,0.5100705986782235,False,False,False,False,False
