@@ -1,6 +1,6 @@
 # Flow Toxicity and VPIN on Free Data
 
-**Contributors:** _names to be added by the team_
+**Contributors:** Group 8: Nazarov, Doroshenko, Burlakov, Daunov, Sergeev
 
 A replication of Easley, López de Prado and O'Hara, *Flow Toxicity and Liquidity in a High-Frequency World* (Review of Financial Studies 25(5), 2012), on free data: IVE ETF ticks instead of E-mini S&P 500 futures. Beyond the paper: four experiments on IVE and on Binance BTCUSDT (where the true buyer and seller of every trade are known); a pre-registered known-answer simulation of the paper's own model; a one-line fix of bulk classification, tested on real data; and an inference package (placebo, stability, power and a ledger of every test with multiple-testing corrections).
 

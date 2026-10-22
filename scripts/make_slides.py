@@ -316,15 +316,15 @@ def build(paper_pdf: Path, out: Path):
         elif idx == 1:
             ph.text = "Research Seminar"
         elif idx == 2:
-            ph.text = "Group N"
+            ph.text = "Group 8"
         elif idx == 4:
             ph.text = "DAVID EASLEY, MARCOS LÓPEZ DE PRADO AND MAUREEN O'HARA"
         else:
             drop(ph)
     text(s, (1.12, 6.0, 7, 1.0), [("Review of Financial Studies 25(5), 2012", {"bullet": False, "size": 14, "color": NAVY}),
-                                  ("Name Surname · Name Surname · Name Surname", {"bullet": False, "size": 14, "color": MUTED})])
+                                  ("Nazarov · Doroshenko · Burlakov · Daunov · Sergeev", {"bullet": False, "size": 14, "color": MUTED})])
     s.notes_slide.notes_text_frame.text = (
-        "Fill in the group number and names. Timing (15 min): problem 2 · method 3 · results and reproduction 5 · "
+        "Timing (15 min): problem 2 · method 3 · results and reproduction 5 · "
         "critique 3 · next steps 2. Then 10 minutes of questions.")
 
     # 2. Problem

@@ -191,7 +191,7 @@ def build_html() -> str:
 
     return f"""
 <h1>Flow toxicity and VPIN: what we did, what we found, and why</h1>
-<p class="sub">Companion to our Research Seminar presentation of Easley, López de Prado &amp; O'Hara (2012), <i>Flow Toxicity and Liquidity in a High-Frequency World</i>, Review of Financial Studies 25(5) · Group N · generated from the project's results on {date.today():%d %B %Y}</p>
+<p class="sub">Companion to our Research Seminar presentation of Easley, López de Prado &amp; O'Hara (2012), <i>Flow Toxicity and Liquidity in a High-Frequency World</i>, Review of Financial Studies 25(5) · Group 8 · generated from the project's results on {date.today():%d %B %Y}</p>
 
 <div class="box">
 <p><b>The short version.</b></p>
