@@ -196,6 +196,11 @@ MAIN_ORDER = [
     "FINAL",
 ]
 
+# Verdicts left off the scorecard slide at the team's request. Those rows are still shown elsewhere:
+# the flash crash with 10-second bars and Lee-Ready on the Result 1 slide, Table 5 at (10, 350) in the
+# Tables 4-5 backup, and every row in the README and the guide.
+SCORECARD_HIDDEN = ("inconclusive", "not reproduced")
+
 # Backups after the final slide, in the order of the talk they support.
 BACKUP_ORDER = [
     "Backup: the VPIN metric and how it is read",
@@ -526,24 +531,31 @@ def build(paper_pdf: Path, out: Path):
         ("Low VPIN = calm reproduces; the warning value is weaker or uncertain.", {"bold": True, "color": NAVY, "size": 12}),
     ], size=12, space=4)
 
-    # 12. Scorecard: two tables, same row numbers
+    # 12. Scorecard: two tables, same row numbers; rows with a verdict in SCORECARD_HIDDEN are left off
     s = slide_with_title(prs, "Reproduction scorecard", (
         "Summary. Left: what the paper reports. Right: what we find on IVE, with ± and a verdict that uses only "
         "our own data: reproduced if the paper's value is inside our 95% interval and the effect's direction is "
-        "significant; inconclusive if inside but not significant; weaker if outside but the direction holds; "
-        "not reproduced otherwise. Rule in scripts/make_report.py. Sources: results/report/scorecard_*.csv."))
+        "significant; weaker if outside but the direction holds. Rule in scripts/make_report.py. Not on this slide, "
+        "if asked: the flash crash with 10-second bars and with Lee-Ready (not reproduced; Result 1 slide) and "
+        "Table 5 at (10, 350) (inconclusive; Tables 4 and 5 backup). The README and the guide keep every row. "
+        "Sources: results/report/scorecard_*.csv."))
     sp = pd.read_csv(ROOT / "results" / "report" / "scorecard_paper.csv")
     so = pd.read_csv(ROOT / "results" / "report" / "scorecard_ours.csv")
     short_ours = so.iloc[:, 1].tolist()
     short_ours[1] = f"{sig['50']} of 4 / {sig['100']} of 4 significant"
     short_ci = ["–" if "event" in c or "dispersion" in c else ("P ≥ 0.95" if "paired" in c else c) for c in so.iloc[:, 2]]
+    keep = ~so["Verdict"].isin(SCORECARD_HIDDEN)
+    paper_tab = sp.loc[keep].iloc[:, :3].rename(columns={sp.columns[2]: "Reported"}).reset_index(drop=True)
+    ours_tab = pd.DataFrame({"#": so["#"], "Ours (± s.e.)": short_ours, "95% interval": short_ci,
+                             "Verdict": so["Verdict"]}).loc[keep].reset_index(drop=True)
+    paper_tab["#"] = ours_tab["#"] = range(1, len(ours_tab) + 1)    # renumbered so the slide's rows run 1, 2, 3, ...
+    height = 0.42 * (len(ours_tab) + 1)
     text(s, (0.4, 2.2, 7.7, 0.35), [("Paper reports: E-mini, 2008–11", {"bullet": False, "bold": True, "color": NAVY, "size": 13})])
-    table(s, sp.iloc[:, :3].rename(columns={sp.columns[2]: "Reported"}), (0.4, 2.6, 7.7, 4.5), widths=[0.35, 5.75, 1.6], size=10)
+    table(s, paper_tab, (0.4, 2.6, 7.7, height), widths=[0.35, 5.75, 1.6], size=10)
     text(s, (8.25, 2.2, 4.75, 0.35), [("Ours: IVE, 2009–11", {"bullet": False, "bold": True, "color": NAVY, "size": 13})])
-    ours_tab = pd.DataFrame({"#": so["#"], "Ours (± s.e.)": short_ours, "95% interval": short_ci, "Verdict": so["Verdict"]})
-    colours = {"reproduced": GREEN, "weaker": ORANGE, "partly": ORANGE, "inconclusive": MUTED, "not reproduced": RED}
-    table(s, ours_tab, (8.25, 2.6, 4.75, 4.5), widths=[0.35, 1.6, 1.3, 1.5], size=10,
-          fills={(i, 3): colours.get(v, MUTED) for i, v in enumerate(so["Verdict"])})
+    colours = {"reproduced": GREEN, "weaker": ORANGE, "partly": ORANGE}
+    table(s, ours_tab, (8.25, 2.6, 4.75, height), widths=[0.35, 1.6, 1.3, 1.5], size=10,
+          fills={(i, 3): colours.get(v, MUTED) for i, v in enumerate(ours_tab["Verdict"])})
 
     # 13. Overfitting
     best = o["best in-sample true positive"]

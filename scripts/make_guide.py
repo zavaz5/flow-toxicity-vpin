@@ -459,7 +459,9 @@ def build_html() -> str:
 """
 
 
-def render(html_text: str, out: Path):
+def render(html_text: str, out: Path, label: str = "presentation guide",
+           title: str = "Flow toxicity and VPIN: presentation guide", css: str = CSS):
+    """A4 PDF from HTML with a footer "Flow toxicity and VPIN · <label> · page i of n"."""
     arch = pymupdf.Archive()
     arch.add(FONTS)
     arch.add(str(ROOT))
@@ -468,7 +470,7 @@ def render(html_text: str, out: Path):
     writer = pymupdf.DocumentWriter(str(out))
     # Each <!--pagebreak--> chunk starts on a new page, so a section never begins at a page foot.
     for chunk in html_text.split("<!--pagebreak-->"):
-        story = pymupdf.Story(html=chunk, user_css=CSS, archive=arch)
+        story = pymupdf.Story(html=chunk, user_css=css, archive=arch)
         more = True
         while more:
             device = writer.begin_page(page_rect)
@@ -479,9 +481,9 @@ def render(html_text: str, out: Path):
     doc = pymupdf.open(out)
     n = doc.page_count
     for i, page in enumerate(doc):
-        page.insert_text((54, page.rect.height - 30), f"Flow toxicity and VPIN · presentation guide · page {i + 1} of {n}",
+        page.insert_text((54, page.rect.height - 30), f"Flow toxicity and VPIN · {label} · page {i + 1} of {n}",
                          fontsize=7.5, fontname="helv", color=(0.45, 0.47, 0.5))
-    doc.set_metadata({"title": "Flow toxicity and VPIN: presentation guide",
+    doc.set_metadata({"title": title,
                       "subject": "Companion to the seminar presentation on Easley, López de Prado & O'Hara (2012)"})
     doc.subset_fonts()
     doc.ez_save(str(out) + ".tmp")
@@ -490,7 +492,7 @@ def render(html_text: str, out: Path):
     return n
 
 
-def verify(html_text: str, pdf_path: Path):
+def verify(html_text: str, pdf_path: Path, label: str = "presentation guide"):
     """Fail if any heading, paragraph or list item of the HTML is missing from the PDF.
 
     PyMuPDF's layout engine can silently drop text after an image at the top of a page,
@@ -501,7 +503,7 @@ def verify(html_text: str, pdf_path: Path):
     import re
     doc = pymupdf.open(pdf_path)
     text = " ".join(page.get_text() for page in doc)
-    text = re.sub(r"Flow toxicity and VPIN · presentation guide · page \d+ of \d+", " ", text)
+    text = re.sub(rf"Flow toxicity and VPIN · {label} · page \d+ of \d+", " ", text)
     import unicodedata
     # NFKC maps look-alikes the text layer uses (e.g. U+037E for ";") back to the plain character
     norm = lambda t: re.sub(r"\s+", "", unicodedata.normalize("NFKC", t.replace("\u00ad", "-").replace("\u2011", "-")))

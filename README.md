@@ -6,7 +6,7 @@ A replication of Easley, López de Prado and O'Hara, *Flow Toxicity and Liquidit
 
 VPIN (Volume-Synchronized Probability of Informed Trading) measures how one-sided trading is, in volume time. The paper argues that high VPIN warns of toxicity-induced volatility, for example hours before the 6 May 2010 flash crash. We rebuild every step from raw ticks, compare each exhibit with the paper, and then test the parts the paper could not: whether bulk volume classification gets buys and sells right, whether VPIN predicts anything out of sample without look-ahead, and whether it carries information beyond plain volatility.
 
-Seminar presentation: [docs/presentation.pptx](docs/presentation.pptx) ([PDF](docs/presentation.pdf)). A written guide to the presentation, including why some results did not reproduce and what each extension adds: [docs/presentation_guide.pdf](docs/presentation_guide.pdf).
+Seminar presentation: [docs/presentation.pptx](docs/presentation.pptx) ([PDF](docs/presentation.pdf)). A written guide to the presentation, including why some results did not reproduce and what each extension adds: [docs/presentation_guide.pdf](docs/presentation_guide.pdf). What to say on each slide, with every formula and method explained and the likely questions: [docs/speaker_script.pdf](docs/speaker_script.pdf).
 Every deviation from the paper, and every decision where the paper is silent: [DEVIATIONS.md](DEVIATIONS.md).
 
 ## Results
@@ -250,6 +250,7 @@ python scripts/inference.py           # placebo, leave-one-year-out, power, ledg
 python scripts/make_report.py         # rewrites the results section of this README
 python scripts/make_slides.py --paper "<path to the paper PDF>"   # docs/presentation.pptx
 python scripts/make_guide.py          # docs/presentation_guide.pdf (after make_slides.py)
+python scripts/make_speaker_script.py # docs/speaker_script.pdf (after make_slides.py)
 ```
 
 Settings live in [configs/pipeline.yaml](configs/pipeline.yaml). The reproduction uses the paper's: one-minute bars, bulk volume classification, V = average daily volume / 50, n = 50, and a CDF from the whole sample. Results go to `results/reproduction/` and `results/extensions/` (CSV and JSON, with figures in `figures/`).
