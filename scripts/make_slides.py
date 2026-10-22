@@ -175,29 +175,37 @@ def arrow_down(slide, x, y, w=0.35, h=0.3):
 
 PAPER_FILL = RGBColor(0xEB, 0x8C, 0x3C)
 
-# Order of the talk; slides not listed (the backups) follow the final slide in build order.
+# Order of the talk: 16 slides for 15 minutes. Every backup slide's main finding is also on a
+# main slide (the scorecard, Result 2, Extension 3), so the talk loses no result.
 MAIN_ORDER = [
     None,  # title slide (no title placeholder text match needed: it is always first)
     "Why toxic order flow matters",
     "Method: from PIN to VPIN, measured in volume time",
     "Method: bulk volume classification",
-    "What is estimated, what is chosen, what is evaluated",
-    "Data and our replication setup",
+    "Data, and what is estimated, chosen and evaluated",
     "Result 1: the flash crash, paper vs ours",
-    "Result 2: the volume clock and the stability of VPIN",
-    "Result 3: does VPIN predict the next bucket's volatility?",
-    "Result 4: the paper's predictive claims on every two-year window",
+    "Result 2: does VPIN predict the next bucket's volatility?",
     "Reproduction scorecard",
     "How could these results be overfit?",
     "Extension 1: is bulk classification right? A ground-truth test",
     "Extension 2: is VPIN more than volatility?",
-    "Extension 3: a known-answer test of VPIN — design (pre-registered)",
-    "Extension 3: results of the known-answer test",
+    "Extension 3: a known-answer test of VPIN (pre-registered)",
     "Extension 4: the fix on real data",
-    "Inference: placebo, stability, power and every test",
     "What our work adds to the paper",
     "Critique and next steps",
     "FINAL",
+]
+
+# Backups after the final slide, in the order of the talk they support.
+BACKUP_ORDER = [
+    "Backup: the VPIN metric and how it is read",
+    "Backup: the volume clock and the stability of VPIN",
+    "Backup: high VPIN and large moves (Tables 4 and 5)",
+    "Backup: the paper's predictive claims on every two-year window",
+    "Backup: real-time VPIN out of sample, year by year",
+    "Backup: crashes after the paper",
+    "Backup: the known-answer test, every metric",
+    "Backup: repository and how to run it",
 ]
 
 
@@ -205,16 +213,16 @@ def slide_title(slide) -> str:
     return slide.shapes.title.text if slide.shapes.title is not None and slide.shapes.title.has_text_frame else ""
 
 
-def reorder(prs, order):
+def reorder(prs, order, backup_order):
     """Put slides in the order of the talk: title first, the listed titles, the final slide,
-    then every other slide (the backups) in the order they were built."""
+    then the backups in `backup_order`. A slide in neither list raises, so none is lost."""
     ids = prs.slides._sldIdLst
     entries = list(zip(list(ids), list(prs.slides)))
     title_first, final = entries[0], next(e for e in entries if e[1].slide_layout.name == "Final_1")
     by_title = {slide_title(sl): (el, sl) for el, sl in entries}
     main = [title_first] + [by_title[t] if t != "FINAL" else final for t in order[1:]]
     used = {id(e[0]) for e in main}
-    backup = [e for e in entries if id(e[0]) not in used]
+    backup = sorted((e for e in entries if id(e[0]) not in used), key=lambda e: backup_order.index(slide_title(e[1])))
     for el, _ in entries:
         ids.remove(el)
     for el, _ in main + backup:
@@ -389,13 +397,22 @@ def build(paper_pdf: Path, out: Path):
     ci = lambda st, as_pct=False: (f"[{st['lo']:.0%}, {st['hi']:.0%}]" if as_pct else f"[{st['lo']:.2f}, {st['hi']:.2f}]")
     se = lambda r, key, as_pct=False: (f"{r[key]:.0%} ± {r[key + '_se']:.0%}" if as_pct else f"{r[key]:.2f} ± {r[key + '_se']:.2f}")
 
-    # 6. Objectives: estimated vs chosen vs evaluated
-    s = slide_with_title(prs, "What is estimated, what is chosen, what is evaluated", (
-        "Method, ~45 s. Anticipates 'what was the objective?'. VPIN is not trained: it is a moment estimator "
-        "(average absolute imbalance over volume) of the PIN ratio, so it has no loss function. The only "
-        "optimisation in the paper is the choice of bucket size and window: they scan grids and report the "
+    # 6. Data and objectives: two set-up tables (no results), so sources are not mixed
+    s = slide_with_title(prs, "Data, and what is estimated, chosen and evaluated", (
+        "Method, ~1 min. Top table, data: CME data are paid, so we use the only free tick history with quotes "
+        "we found: IVE from Kibot, which covers the flash crash. Binance BTC data give the true aggressor side, "
+        "which the paper never had. The table compares set-ups, not results. All deviations with reasons: "
+        "DEVIATIONS.md. Bottom table anticipates 'what was the objective?'. VPIN is not trained: it is a moment "
+        "estimator (average absolute imbalance over volume) of the PIN ratio, so it has no loss function. The "
+        "only optimisation in the paper is the choice of bucket size and window: they scan grids and report the "
         "best cell, i.e. the selection objective IS the evaluation statistic, on the same data. We separate "
         "the two: select on 2009-11, evaluate on 2011-26."))
+    df = pd.DataFrame([
+        ("Market and hours", "E-mini S&P 500 and WTI crude futures; almost 24 hours", "IVE (S&P 500 Value ETF) ticks with quotes, 09:30–16:00 New York; BTCUSDT for extensions"),
+        ("Period", "Jan 2008 – Aug 2011 (incl. 2008 crisis)", f"{data['period'][0]} – {data['period'][1]}; out of sample to Sep 2026"),
+        ("Classification, settings", "bulk, one-minute bars; V = ADV/50, n = 50, whole-sample σ and CDF", "identical, plus 10-second bars and Lee-Ready"),
+    ], columns=["Data", "Paper", "Ours"])
+    table(s, df, (0.64, 2.25, 12.05, 1.1), widths=[2.2, 4.65, 5.2], size=11)
     df = pd.DataFrame([
         ("Estimate PIN (original model)", "Maximise the likelihood of a Poisson mixture: α, μ, ε, δ", "daily buy and sell counts"),
         ("Estimate VPIN", "Nothing is fitted: average |sell − buy volume| / V, a moment estimate of αμ / (αμ + 2ε)", "the last n buckets"),
@@ -403,30 +420,15 @@ def build(paper_pdf: Path, out: Path):
         ("Choose buckets/day and n", "Paper: grid cell with the highest corr(ln VPIN, next |return|) (Fig. 10) or true-positive rate (Table 5)", "paper: the evaluation sample itself · ours: 2009–11, then frozen"),
         ("Evaluate", "Corr with next |return|; P(VPIN high | big move); true positives. We add lift and ΔR² over volatility", "paper: in sample · ours: 2011–26, out of sample"),
     ], columns=["Step", "Objective", "Data used"])
-    table(s, df, (0.64, 2.4, 12.05, 3.4), widths=[2.6, 5.6, 3.85], size=12)
-    text(s, (0.64, 6.0, 12.0, 1.0), [
-        "**VPIN has no training objective.** The paper's only optimisation is the parameter search, and it maximises the statistic it then reports, on the same data. We select on 2009–11 and evaluate on 2011–26.",
-    ], size=14, color=NAVY)
-
-    # 7. Data
-    s = slide_with_title(prs, "Data and our replication setup", (
-        "Data, ~1 min. CME data are paid, so we use the only free tick history with quotes we found: IVE from "
-        "Kibot, which covers the flash crash. Binance BTC data give the true aggressor side, which the paper "
-        "never had. This table compares set-ups, not results. All deviations with reasons: DEVIATIONS.md."))
-    df = pd.DataFrame([
-        ("Market", "E-mini S&P 500 and WTI crude futures", "IVE (S&P 500 Value ETF) ticks with quotes; BTCUSDT for extensions"),
-        ("Period", "Jan 2008 – Aug 2011 (incl. 2008 crisis)", f"{data['period'][0]} – {data['period'][1]}; out of sample to Sep 2026"),
-        ("Trading hours", "almost 24 hours", "09:30–16:00 New York"),
-        ("Classification", "bulk, one-minute bars", "same, plus 10-second bars and Lee-Ready"),
-        ("Settings", "V = ADV/50, n = 50, whole-sample σ and CDF", "identical"),
-    ], columns=["Set-up", "Paper", "Ours"])
-    table(s, df, (0.64, 2.45, 12.05, 2.6), widths=[2.6, 4.2, 5.25], size=13)
-    text(s, (0.64, 5.4, 12.0, 1.6), [
-        f"Main deviations: ETF instead of futures; regular hours only; our sample starts in Sep 2009 (no 2008 crisis); "
-        f"42 IVE trades at prices like $0.08 that the exchanges **cancelled** on 6 May 2010 are removed. "
-        f"{data['share_bars_no_price_change']:.0%} of IVE one-minute bars have no price change, and bulk classification splits them 50/50.",
-        "**±** on our numbers: block bootstrap over calendar months (1,000 replications), because VPIN windows overlap and volatility clusters.",
-    ], size=13, color=MUTED)
+    table(s, df, (0.64, 3.8, 12.05, 1.8), widths=[2.2, 6.05, 3.8], size=11)
+    text(s, (0.64, 6.25, 12.0, 1.1), [
+        (f"Also removed: 42 IVE trades at prices like $0.08 that the exchanges **cancelled** on 6 May 2010. "
+         f"{data['share_bars_no_price_change']:.0%} of IVE one-minute bars have no price change; bulk classification splits them 50/50. "
+         "**±** on our numbers: block bootstrap over calendar months (1,000 replications), because VPIN windows overlap and volatility clusters.",
+         {"size": 11, "color": MUTED}),
+        ("**VPIN has no training objective.** The paper's only optimisation is the parameter search, and it maximises the statistic it then reports, on the same data. We select on 2009–11 and evaluate on 2011–26.",
+         {"size": 12, "color": NAVY}),
+    ], space=4)
 
     # 8. Flash crash
     s = slide_with_title(prs, "Result 1: the flash crash, paper vs ours", (
@@ -447,8 +449,8 @@ def build(paper_pdf: Path, out: Path):
     ], size=13, space=3)
 
     # 9. Volume clock + stability: the paper's table and ours, separately
-    s = slide_with_title(prs, "Result 2: the volume clock and the stability of VPIN", (
-        "Results, ~1 min. Two separate tables: the paper's Table 1 and ours. Ours drops 6 May 2010 (IVE fell to "
+    s = slide_with_title(prs, "Backup: the volume clock and the stability of VPIN", (
+        "Backup; rows 1-2 of the scorecard summarise it in the talk. Two separate tables: the paper's Table 1 and ours. Ours drops 6 May 2010 (IVE fell to "
         "about half its price for minutes; one change of ~100 sigma sets the kurtosis) and overnight changes "
         "(a 24-hour futures market has none). Last column: in how many paired bootstrap replications volume "
         "time has the lower value; green = at least 95%. Sources: results/reproduction/table1_*_bootstrap.csv, "
@@ -473,25 +475,35 @@ def build(paper_pdf: Path, out: Path):
     ], size=13, space=6)
 
     # 10. Correlation surface
-    s = slide_with_title(prs, "Result 3: does VPIN predict the next bucket's volatility?", (
+    w = k["windows"]
+    n_windows = w["IVE"]["windows"] + w["BTC"]["windows"]
+    # The slide says no window reaches the paper's numbers; fail loudly if the results ever disagree.
+    assert max(w[m]["corr_50_250"][1] for m in w) < PN.CORR_50_250
+    assert max(w[m]["insurance_50_250"][1] for m in w) < PN.INSURANCE_50_250
+    s = slide_with_title(prs, "Result 2: does VPIN predict the next bucket's volatility?", (
         "Results, ~1 min. Paper Fig. 10 vs the same computation on IVE. Each caption gives its own source's "
         "number. The paper's interval (footnote 29) treats buckets as independent; neighbouring VPIN values "
         "share almost all of their window, so it is far too narrow. With the same iid formula ours would be "
         f"[{pred['corr_50_250_fisher_ci_iid'][0]:.2f}, {pred['corr_50_250_fisher_ci_iid'][1]:.2f}]; month blocks give {ci(u250['corr'])}. "
-        "Source: results/reproduction/parameter_grid.csv, summary.json."))
+        f"Every window: the paper's exact in-sample method on all {n_windows} two-year windows of IVE and BTC; none "
+        "reaches the paper's correlation or insurance value (backup slide). "
+        "Source: results/reproduction/parameter_grid.csv, summary.json, results/extensions/windows/."))
     picture(s, figs["paper_fig10"], (0.4, 2.35, 5.6, 3.9))
     text(s, (0.4, 6.25, 5.6, 0.7), [(f"Paper (E-mini): {PN.CORR_50_250:.2f} at (50, 250), 95% CI [{PN.CORR_50_250_CI[0]:.3f}, {PN.CORR_50_250_CI[1]:.3f}] (iid)",
                                      {"bullet": False, "size": 12, "color": MUTED, "align": PP_ALIGN.CENTER})])
     picture(s, REP / "figures" / "fig10_correlation.png", (6.2, 2.35, 4.6, 3.9))
     text(s, (6.2, 6.25, 4.6, 0.7), [(f"Ours (IVE): {pm(u250['corr'])} at (50, 250), 95% CI {ci(u250['corr'])}",
                                      {"bullet": False, "size": 12, "color": MUTED, "align": PP_ALIGN.CENTER})])
-    text(s, (10.9, 2.45, 2.25, 4.4), [
-        ("On IVE", {"bullet": False, "bold": True, "color": NAVY, "size": 15}),
-        ("Same sign; 0.40 is outside our interval.", {"bullet": False, "size": 13, "space": 12}),
-        ("About the ±", {"bullet": False, "bold": True, "color": NAVY, "size": 15}),
+    text(s, (10.9, 2.35, 2.3, 4.7), [
+        ("On IVE", {"bullet": False, "bold": True, "color": NAVY, "size": 14}),
+        ("Same sign; 0.40 is outside our interval.", {"bullet": False, "size": 12, "space": 10}),
+        ("About the ±", {"bullet": False, "bold": True, "color": NAVY, "size": 14}),
         (f"An iid interval would give ours as [{pred['corr_50_250_fisher_ci_iid'][0]:.2f}, {pred['corr_50_250_fisher_ci_iid'][1]:.2f}]: overlapping windows make it far too narrow.",
-         {"bullet": False, "size": 13}),
-    ], size=13)
+         {"bullet": False, "size": 12, "space": 10}),
+        ("On every window", {"bullet": False, "bold": True, "color": NAVY, "size": 14}),
+        (f"None of {n_windows} two-year windows (IVE, BTC) reaches the paper's {PN.CORR_50_250:.2f}, nor its > {PN.INSURANCE_50_250:.0%} "
+         f"for big moves; we could detect ≥ {k['inference']['power']['mde_80pct_power']:.2f}.", {"bullet": False, "size": 12}),
+    ], size=12)
 
     # 11. Tables 4 and 5
     s = slide_with_title(prs, "Backup: high VPIN and large moves (Tables 4 and 5)", (
@@ -685,9 +697,8 @@ def build(paper_pdf: Path, out: Path):
 
     # ---------- new slides: all windows, simulation, the fix, inference, contribution ----------
     EXTD = ROOT / "results" / "extensions"
-    w = k["windows"]
-    s = slide_with_title(prs, "Result 4: the paper's predictive claims on every two-year window", (
-        "Results, ~45 s. The paper's exact in-sample method on every two-year window, starting each January and "
+    s = slide_with_title(prs, "Backup: the paper's predictive claims on every two-year window", (
+        "Backup; the Result 2 slide summarises it in the talk. The paper's exact in-sample method on every two-year window, starting each January and "
         "July: 31 windows of IVE, 10 of BTC. Every window is shown; none was selected. This analysis was run once "
         "as an exploration before we wrote the pre-registration, and we say so. Not a power problem: the "
         "reproduction can detect any correlation of 0.13 or more with 80% power. Source: "
@@ -708,31 +719,25 @@ def build(paper_pdf: Path, out: Path):
     ], size=13, space=6)
 
     sim_get = lambda wd, ver, m: next(r for r in k["simulation"]["summary"] if r["world"] == wd and r["version"] == ver and r["metric"] == m)
-    s = slide_with_title(prs, "Extension 3: a known-answer test of VPIN — design (pre-registered)", (
-        "Upgrade, ~1 min. The gap: the paper validates VPIN (Appendix A.2) with buys and sells drawn straight from "
+    d = k["simulation"]["decisions"]
+    s = slide_with_title(prs, "Extension 3: a known-answer test of VPIN (pre-registered)", (
+        "Upgrade, ~1.5 min. The gap: the paper validates VPIN (Appendix A.2) with buys and sells drawn straight from "
         "the PIN model: correct labels, no prices. Its empirical VPIN uses bulk classification, which needs prices, "
         "so that validation does not cover the method it uses. We simulate the paper's own model with a price "
         "and run the exact pipeline where the truth is known. Hypotheses, metrics and decision rules were written "
-        "in docs/preregistration.md before the first run; its hash is in the run manifest."))
-    text(s, (0.64, 2.4, 6.2, 4.7), [
-        "**Gap in the paper:** its Monte Carlo (Appendix A.2) uses correctly labelled trades and no prices; its VPIN uses bulk classification, which needs prices.",
-        "**Our model:** the paper's PIN model, plus a price: Δp = λ (buys − sells) + public noise. Informed flow moves the price; public noise does not involve any trader.",
-        "**Worlds:** T = more informed trading in some blocks; V = more volatility and uninformed volume, informed trading unchanged; TV = both; 0 = neither.",
-        f"**Same pipeline**, truth known, {k['simulation']['manifest']['reps']} replications per world, rules fixed before running.",
-    ], size=14, space=8)
-    picture(s, EXTD / "simulation" / "example_V.png", (7.0, 2.45, 6.1, 3.6))
-    text(s, (7.0, 6.1, 6.1, 0.9), [("World V: the paper's VPIN (blue) stays high in volatile blocks while the true informed share (dashed) falls.",
-                                    {"bullet": False, "size": 11, "color": MUTED})])
-
-    d = k["simulation"]["decisions"]
-    s = slide_with_title(prs, "Extension 3: results of the known-answer test", (
-        "Upgrade, ~1 min. D2: in world V the paper's VPIN raises more alarms in volatile blocks, although informed "
+        "in docs/preregistration.md before the first run; its hash is in the run manifest. "
+        "D2: in world V the paper's VPIN raises more alarms in volatile blocks, although informed "
         "trading never changes; true-label VPIN goes the other way (extra uninformed volume dilutes informed "
         "trading), the same sign as on real BTC. In world V the paper's VPIN tracks the true informed share at "
         "corr ~0.03. D3 did not hold: the paper's predictive statistic is not fooled in this calibration, because "
         "two effects cancel. D4: one-day sigma fixes the bias and keeps detection. ± = Monte Carlo s.e. "
-        "Source: results/extensions/simulation/."))
-    picture(s, EXTD / "simulation" / "metrics.png", (0.4, 2.3, 8.4, 2.75))
+        "Every metric with its error bar: backup slide. Source: results/extensions/simulation/."))
+    text(s, (0.64, 2.3, 6.4, 2.1), [
+        "**Gap in the paper:** its Monte Carlo (Appendix A.2) uses correctly labelled trades and no prices; its VPIN uses bulk classification, which needs prices.",
+        "**Our model:** the paper's PIN model, plus a price: Δp = λ (buys − sells) + public noise. Informed flow moves the price; public noise does not involve any trader.",
+        "**Worlds:** T = more informed trading in some blocks; V = more volatility and uninformed volume, informed trading unchanged; TV = both; 0 = neither.",
+        f"**Same pipeline**, truth known, {k['simulation']['manifest']['reps']} replications per world, rules fixed before running.",
+    ], size=12, space=4)
     verdict = lambda ok: "holds" if ok else "does not hold"
     dec = pd.DataFrame([
         ("D1", "true labels track informed trading", f"{d['D1_true_vpin_tracks_informed_trading']['M1_T_true']:.2f}", verdict(d["D1_true_vpin_tracks_informed_trading"]["holds"])),
@@ -740,15 +745,29 @@ def build(paper_pdf: Path, out: Path):
         ("D3", "paper's predictive test fooled by volatility", f"{d['D3_predictive_test_uninformative']['M4_V_paper']:+.3f} ± {d['D3_predictive_test_uninformative']['mc_se']:.3f}", verdict(d["D3_predictive_test_uninformative"]["holds"])),
         ("D4", "one-day σ: fewer false alarms, same detection", f"{d['D4_local_sigma_is_an_improvement']['M2_V_local']:+.3f}; AUC {d['D4_local_sigma_is_an_improvement']['AUC_T_local']:.3f}", verdict(d["D4_local_sigma_is_an_improvement"]["holds"])),
     ], columns=["Rule", "Pre-registered statement", "Result", "Verdict"])
-    table(s, dec, (0.64, 5.2, 8.1, 1.9), widths=[0.6, 3.9, 2.2, 1.4], size=11,
+    table(s, dec, (0.64, 4.25, 6.4, 1.9), widths=[0.55, 2.95, 1.6, 1.3], size=11,
           fills={(i, 3): (GREEN if v == "holds" else MUTED) for i, v in enumerate(dec["Verdict"])})
-    text(s, (9.1, 2.4, 4.0, 4.6), [
+    text(s, (7.35, 2.3, 5.75, 1.3), [
         ("Tracking of the true informed share, world V", {"bullet": False, "bold": True, "color": NAVY, "size": 14}),
-        (f"paper's VPIN **{sim_get('V', 'paper', 'M1_tracking')['mean']:.2f}**", {"size": 14}),
-        (f"true labels **{sim_get('V', 'true', 'M1_tracking')['mean']:.2f}**", {"size": 14}),
-        (f"one-day σ (fix) **{sim_get('V', 'local', 'M1_tracking')['mean']:.2f}**", {"size": 14, "space": 12}),
+        (f"paper's VPIN **{sim_get('V', 'paper', 'M1_tracking')['mean']:.2f}** · true labels **{sim_get('V', 'true', 'M1_tracking')['mean']:.2f}** · "
+         f"one-day σ (fix) **{sim_get('V', 'local', 'M1_tracking')['mean']:.2f}**", {"size": 13}),
         ("When volatility changes, the paper's VPIN stops measuring informed trading.", {"bold": True, "color": NAVY, "size": 13}),
     ], size=13, space=4)
+    picture(s, EXTD / "simulation" / "example_V.png", (7.35, 3.7, 5.75, 2.85))
+    text(s, (7.35, 6.55, 5.75, 0.6), [("World V: the paper's VPIN (blue) stays high in volatile blocks while the true informed share (dashed) falls.",
+                                       {"bullet": False, "size": 11, "color": MUTED})])
+
+    s = slide_with_title(prs, "Backup: the known-answer test, every metric", (
+        "Backup for Extension 3. Bars are means over the replications, error bars ± 1.96 Monte Carlo standard errors. "
+        "Left: D2, false alarms from volatility in world V (alarm rate in high minus low volatility blocks). "
+        "Middle: detection of toxic episodes in world T (AUC, 0.5 = chance). Right: D3, the paper's predictive "
+        "statistic where informed trading never changes (world V). Source: results/extensions/simulation/."))
+    picture(s, EXTD / "simulation" / "metrics.png", (0.4, 2.3, 12.5, 4.1))
+    text(s, (0.64, 6.45, 12.0, 0.7), [
+        ("Blue: the paper's method (BVC, whole-sample σ); green: true labels; orange: BVC with one-day σ (our fix). Error bars: ± 1.96 Monte Carlo standard errors. "
+         "Left: false alarms from volatility (world V). Middle: detection of toxic episodes (world T, AUC). Right: the paper's predictive test where informed trading never changes (world V).",
+         {"bullet": False, "size": 12, "color": MUTED}),
+    ])
 
     ls = pd.DataFrame(k["local_sigma"]["predictive"])
     ls = ls[((ls["market"] == "BTC") & (ls["sample_length"] == 50)) | (ls["market"] != "BTC")]
@@ -775,50 +794,43 @@ def build(paper_pdf: Path, out: Path):
     ], size=13, space=4)
 
     inf = k["inference"]
-    s = slide_with_title(prs, "Inference: placebo, stability, power and every test", (
-        "Upgrade, ~1 min. The placebo keeps each one-minute imbalance's size and draws its direction at random. "
-        "If VPIN's predictive power came from informed traders on one side, the placebo would lose it; it keeps "
-        "~100%. On IVE 2011-26 the real VPIN is detectably better by 0.002 — still 97% kept. Ledger: a claim "
-        "counts as supported only if significant and on the claimed side. Sources: "
-        "results/extensions/inference/, results/report/ledger.csv, docs/preregistration.md."))
-    plc = pd.DataFrame([(sname.replace(", real-time", ""), f"{v['real_corr']:.3f}", f"{v['placebo_corr_mean']:.3f} ± {v['placebo_corr_sd']:.3f}",
-                         f"{v['placebo_share_of_real_corr']:.0%}") for sname, v in inf["placebo"].items()],
-                       columns=["Sample", "Corr, real VPIN", "Corr, direction shuffled", "Kept"])
-    text(s, (0.64, 2.3, 8.0, 0.4), [("Placebo: VPIN with the direction of every imbalance shuffled", {"bullet": False, "bold": True, "color": NAVY, "size": 14})])
-    table(s, plc, (0.64, 2.75, 8.0, 1.6), widths=[3.6, 1.4, 2.0, 1.0], size=11)
-    led = inf["ledger"]
-    flips = sum(v["sign_flips"] for v in inf["loyo"].values())
-    text(s, (0.64, 4.6, 8.0, 2.4), [
-        "**The direction of trading carries almost none of VPIN's predictive power:** the size of price moves does.",
-        f"**Leave one year out:** {flips} sign flips across {len(inf['loyo'])} signal–sample pairs.",
-        f"**Power:** the reproduction detects any correlation ≥ {inf['power']['mde_80pct_power']:.2f}; the paper's 0.40 would not be missed.",
-    ], size=13, space=6)
-    text(s, (8.9, 2.3, 4.2, 4.7), [
-        ("Ledger of every test", {"bullet": False, "bold": True, "color": NAVY, "size": 14}),
-        (f"{led['tests']} tests behind our claims", {"size": 13}),
-        (f"supported after Benjamini–Hochberg: **{led['supported_bh']}**", {"size": 13}),
-        (f"after Bonferroni: **{led['supported_bonferroni']}**", {"size": 13}),
-        (f"significant but on the wrong side: **{led['significant_wrong_side']}** (reported as not supported)", {"size": 13}),
-        ("New tests pre-registered before running; every later change logged.", {"size": 12, "color": MUTED}),
-    ], size=13, space=5)
-
     s = slide_with_title(prs, "What our work adds to the paper", (
         "~1 min. Be explicit about what is new and what confirms others. The ground-truth and volatility "
         "critiques confirm Andersen and Bondarenko (2014, 2015; the latter uses perfect trade classification on E-mini) and "
         "Chakrabarty, Pascual and Shkilko (2015, bulk vs trade-by-trade classification), on new data. The "
         "known-answer simulation that closes the paper's own validation gap, and the one-day-sigma fix tested "
-        "against ground truth, are our additions, as far as we know."))
-    text(s, (0.64, 2.35, 12.2, 4.7), [
+        "against ground truth, are our additions, as far as we know. "
+        "Right column, the inference behind points 2 and 4. The placebo keeps each one-minute imbalance's size and draws its direction at random. "
+        "If VPIN's predictive power came from informed traders on one side, the placebo would lose it; it keeps "
+        "~100%. On IVE 2011-26 the real VPIN is detectably better by 0.002 — still 97% kept. Ledger: a claim "
+        "counts as supported only if significant and on the claimed side. Sources: "
+        "results/extensions/inference/, results/report/ledger.csv, docs/preregistration.md."))
+    text(s, (0.64, 2.35, 7.3, 4.75), [
         "**1. Closes the paper's validation gap.** Its Monte Carlo never runs bulk classification. Our known-answer simulation of its own model shows that VPIN, as the paper computes it, stops measuring informed trading when volatility changes.",
         "**2. Locates where VPIN's predictive power comes from.** With true labels VPIN does not predict volatility (BTC); with shuffled directions it predicts as well as the real VPIN (IVE, BTC). It is the size of price moves, not toxicity.",
         "**3. A fix that works where it can be checked.** Measuring price changes against the previous day's volatility makes VPIN track true toxicity better on BTC, and removes the volatility artefact.",
-        "**4. An honest evaluation.** Real-time, out of sample 2011–2026, all 41 two-year windows, pre-registration, ± on every metric, and a ledger with multiple-testing control. The paper's predictive numbers do not appear anywhere.",
-        ("Confirms on new data: Andersen & Bondarenko (2014, 2015); Chakrabarty, Pascual & Shkilko (2015).", {"bullet": False, "size": 12, "color": MUTED}),
-    ], size=15, space=10)
+        f"**4. An honest evaluation.** Real-time, out of sample 2011–2026, all {n_windows} two-year windows, pre-registration, ± on every metric, and a ledger with multiple-testing control. The paper's predictive numbers do not appear anywhere.",
+        ("Confirms on new data: Andersen & Bondarenko (2014, 2015); Chakrabarty, Pascual & Shkilko (2015).", {"bullet": False, "size": 11, "color": MUTED}),
+    ], size=13, space=7)
+    plc = pd.DataFrame([(sname.replace(", real-time", ""), f"{v['real_corr']:.3f}", f"{v['placebo_corr_mean']:.3f} ± {v['placebo_corr_sd']:.3f}",
+                         f"{v['placebo_share_of_real_corr']:.0%}") for sname, v in inf["placebo"].items()],
+                       columns=["Sample", "Corr, real VPIN", "Corr, direction shuffled", "Kept"])
+    text(s, (8.2, 2.3, 4.9, 0.4), [("Placebo: direction of every imbalance shuffled", {"bullet": False, "bold": True, "color": NAVY, "size": 13})])
+    table(s, plc, (8.2, 2.7, 4.9, 1.3), widths=[1.75, 0.85, 1.6, 0.7], size=10)
+    led = inf["ledger"]
+    flips = sum(v["sign_flips"] for v in inf["loyo"].values())
+    text(s, (8.2, 4.3, 4.9, 2.8), [
+        "**The direction of trading carries almost none of VPIN's predictive power:** the size of price moves does.",
+        f"**Leave one year out:** {flips} sign flips across {len(inf['loyo'])} signal–sample pairs.",
+        f"**Power:** the reproduction detects any correlation ≥ {inf['power']['mde_80pct_power']:.2f}; the paper's 0.40 would not be missed.",
+        f"**Ledger:** {led['tests']} tests behind our claims; supported after Benjamini–Hochberg **{led['supported_bh']}**, after Bonferroni "
+        f"**{led['supported_bonferroni']}**; significant but on the wrong side **{led['significant_wrong_side']}** (reported as not supported).",
+        ("New tests pre-registered before running; every later change logged.", {"size": 11, "color": MUTED}),
+    ], size=12, space=4)
 
     # Final slide, then the backup slides after it
     prs.slides.add_slide(layout(prs, "Final_1"))
-    reorder(prs, MAIN_ORDER)
+    reorder(prs, MAIN_ORDER, BACKUP_ORDER)
     out.parent.mkdir(parents=True, exist_ok=True)
     prs.save(out)
     print(f"saved {out} ({len(prs.slides)} slides)")

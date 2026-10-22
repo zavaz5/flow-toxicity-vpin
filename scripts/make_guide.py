@@ -235,7 +235,7 @@ def build_html() -> str:
 
 <!--pagebreak-->
 <h2>2. What we did</h2>
-<h3>Data ({sl('Data and')})</h3>
+<h3>Data ({sl('Data, and')})</h3>
 <p>The paper uses E-mini S&amp;P 500 futures and WTI crude oil futures from the CME, 2008–2011. These data are paid. The only free tick history with quotes we found that covers the flash crash is Kibot's sample of the <b>IVE ETF</b> (iShares S&amp;P 500 Value): every trade with the bid and ask at that moment, from 28 September 2009 to today. Our reproduction uses {d['period'][0]} to {d['period'][1]}: {d['days']} trading days and {d['ticks']:,} trades. Everything after 15 August 2011 is new data for the out-of-sample test.</p>
 <p>For the extensions we added <b>Binance BTCUSDT perpetual futures</b> (2020–2026). Binance records whether the buyer or the seller initiated each trade, so for Bitcoin we know the true buy volume that bulk classification tries to estimate. The paper never had such data.</p>
 
@@ -249,7 +249,7 @@ def build_html() -> str:
 <li>Table 1 is also reported without the flash-crash day and without overnight price changes, because one IVE price move that day is about 100 standard deviations and dominates every statistic.</li>
 </ul>
 
-<h3>What is estimated, chosen and evaluated ({sl('What is estimated')})</h3>
+<h3>What is estimated, chosen and evaluated ({sl('Data, and')})</h3>
 <p>Our last presentation was asked about the difference between a training objective and a calibration objective. The equivalent here: <b>VPIN has no training objective.</b> Nothing is fitted; VPIN is a moment estimate (an average of observed imbalances). The original PIN model is estimated by maximum likelihood, but VPIN replaces it. The inputs σ and V are plain sample statistics. The only optimisation in the paper is the <b>choice of parameters</b> (buckets per day and window length): the authors scan grids and report the cell with the highest correlation (Figure 10) or the highest true-positive rate (Table 5). That is a selection objective, and it is the same statistic that is then reported as the result, on the same data. We separate the two: parameters are selected on 2009–2011 and evaluated on 2011–2026.</p>
 
 <h3>How we measure precision (±) and judge each claim</h3>
@@ -262,7 +262,7 @@ def build_html() -> str:
 {fig("results/reproduction/figures/fig4_flash_crash.png", "Our version of the paper's Figure 4: IVE on 6 May 2010. Blue: VPIN; purple, dashed: its CDF over the whole sample, with the 0.9 alarm line; grey: price; shaded: the fall and recovery (14:32–15:08 New York).")}
 <p>The paper reports that all three classification schemes put CDF(VPIN) above 0.9 at least two hours before the crash. On IVE this holds only for one-minute bars: VPIN was in its top decile from {one_min['first'][11:16]}, {one_min['lead_hours']:.1f} hours before the fall began. With 10-second bars the CDF first crossed 0.9 at {ten_s['first'][11:16]}, during the fall. With Lee–Ready, trade by trade, it never did (maximum {lr['max_cdf']:.2f}). A single event allows no ±. The lesson is that the warning depends on how volume is classified, which the paper's robustness discussion does not show.</p>
 
-<h3>The volume clock and stability ({sl('Result 2')})</h3>
+<h3>The volume clock and stability (backup {sl('Backup: the volume clock')})</h3>
 <p>The paper's Table 1 compares price changes sampled 50 (or 100) times a day at equal clock intervals with price changes sampled at equal volume intervals. Volume sampling should give changes closer to a normal distribution: lower kurtosis and Jarque–Bera statistic, less autocorrelation (Ljung–Box, L-B*) and less heteroskedasticity (White*).</p>
 <p class="label">The paper's Table 1 (E-mini, 2008–2011)</p>
 {table(paper_t1)}
@@ -271,7 +271,7 @@ def build_html() -> str:
 <p>The last column is the share of bootstrap replications in which volume time has the lower value; both samples draw the same months. On IVE the point estimates favour volume time for {low['50']} of the 4 test statistics at 50 draws a day and {low['100']} of 4 at 100, but only {sig['50']} and {sig['100']} of them clear the 95% bar. The clearest gains are in the tails and heteroskedasticity; autocorrelation does not improve at 50 draws a day. Verdict: <b>partly reproduced</b>.</p>
 <p>Stability (Figure 5): starting the bucket sequence 0, 1, …, 999 one-minute bars later changes VPIN by {k['stability']['ours']:.1%} of its mean on IVE. The paper reports {k['stability']['paper']:.1%} for the E-mini. VPIN does not depend on where the volume clock starts: <b>reproduced</b>.</p>
 
-<h3>Does VPIN predict the next bucket's volatility? ({sl('Result 3')})</h3>
+<h3>Does VPIN predict the next bucket's volatility? ({sl('Result 2')})</h3>
 {fig("results/reproduction/figures/fig10_correlation.png", "Our version of Figure 10: correlation of ln VPIN with the absolute return over the next bucket, for every combination of buckets per day and window length. The orange square is the paper's preferred (50, 250).", 62)}
 <p>The paper reports a correlation of {PN.CORR_50_250:.2f} at 50 buckets a day and a 250-bucket window. On IVE we get {pm(u250['corr'])}, 95% interval {ci(u250['corr'])}. The sign is the paper's, but 0.40 lies far outside our interval. The highest value anywhere on our grid is {pred['corr_max']:.2f}. Verdict: <b>weaker</b>.</p>
 
@@ -290,7 +290,7 @@ def build_html() -> str:
 {table(ours_sc, verdict_col="Verdict")}
 
 <!--pagebreak-->
-<h3>The predictive claims on every two-year window ({sl('Result 4')})</h3>
+<h3>The predictive claims on every two-year window ({sl('Result 2')}; backup {sl('Backup: the paper')})</h3>
 <p>Could the paper's numbers appear in a different slice of our data? We ran the paper's exact in-sample method on every two-year window, starting each January and July: {w['IVE']['windows']} windows of IVE and {w['BTC']['windows']} of Bitcoin. Every window is shown; this analysis was run once as an exploration before the pre-registration, and we label it so.</p>
 {fig("results/extensions/windows/windows.png", "Our data, every two-year window: correlation of ln VPIN with the next absolute return (left) and P(VPIN in top quartile | next move above 0.75%) (right).")}
 <p>On IVE the correlation ranges from {w['IVE']['corr_50_250'][0]:.2f} to {w['IVE']['corr_50_250'][1]:.2f} and the insurance value from {w['IVE']['insurance_50_250'][0]:.0%} to {w['IVE']['insurance_50_250'][1]:.0%}; on Bitcoin from {w['BTC']['corr_50_250'][0]:.2f} to {w['BTC']['corr_50_250'][1]:.2f} and {w['BTC']['insurance_50_250'][0]:.0%} to {w['BTC']['insurance_50_250'][1]:.0%}. The paper reports 0.40 and over 84%. No window on either market reaches them. On Bitcoin a 0.75% move is routine, so the true-positive rate is as high or higher when VPIN is <i>low</i>, and that statistic says nothing there.</p>
@@ -355,7 +355,7 @@ def build_html() -> str:
 <p><b>What it adds.</b> Whatever predictive power VPIN has comes from its volatility component, not from order-flow toxicity. The paper never compares VPIN with this obvious baseline.</p>
 
 <!--pagebreak-->
-<h3>Extension 3: a known-answer test of VPIN ({sl('Extension 3: a known')} and {sl('Extension 3: results')})</h3>
+<h3>Extension 3: a known-answer test of VPIN ({sl('Extension 3')}; backup {sl('Backup: the known-answer')})</h3>
 <p><b>The gap.</b> The paper validates VPIN with a Monte Carlo (Appendix A.2, Table A1) that draws buy and sell volume straight from the PIN model: every trade is labelled correctly and there are no prices. Its empirical VPIN, however, labels trades by bulk classification, which needs prices. So the paper never checks the method it actually uses. <b>What we did.</b> We simulated the paper's own model and added a price: order flow moves it (Δp = λ·(buys − sells)) and public news adds noise that involves no trader. We then ran the paper's exact pipeline where the true share of informed trading is known. There are four worlds: T (more informed trading in some blocks of days), V (more volatility and uninformed volume, informed trading unchanged), TV (both) and 0 (neither); {sim_n} replications each. Hypotheses, metrics and decision rules were written in <code>docs/preregistration.md</code> before the first run.</p>
 {table(sim_df)}
 {table(dec_df, verdict_col="Verdict")}
@@ -378,7 +378,7 @@ def build_html() -> str:
 </ul>
 <p><b>What it adds.</b> A constructive result. A one-line change to the method makes VPIN a better measure of toxicity where it can be checked, and it shows how little toxicity information remains once the volatility artefact is removed.</p>
 
-<h3>The inference package ({sl('Inference')})</h3>
+<h3>The inference package ({sl('What our work adds')})</h3>
 <p><b>Placebo.</b> Each one-minute imbalance keeps its size but gets a random direction (20 draws). If VPIN's predictive power came from informed traders on one side of the market, the placebo would lose it. It does not:</p>
 {table(plc_df)}
 <ul>
@@ -429,7 +429,7 @@ def build_html() -> str:
 </ul>
 
 <h2>7. Questions we expect</h2>
-<p><b>What was the objective?</b> VPIN has none: it is an average of observed imbalances, not a fitted model. The paper's only optimisation is the grid search over bucket size and window, which maximises the reported statistic on the same data. We select parameters on 2009–2011 and evaluate on 2011–2026 (slide 6).</p>
+<p><b>What was the objective?</b> VPIN has none: it is an average of observed imbalances, not a fitted model. The paper's only optimisation is the grid search over bucket size and window, which maximises the reported statistic on the same data. We select parameters on 2009–2011 and evaluate on 2011–2026 ({sl('Data, and')}).</p>
 <p><b>Why IVE and not the E-mini?</b> E-mini tick data are paid; IVE is the only free tick history with quotes we found that covers the flash crash. We say clearly that it is a different market, and Section 4 explains what that changes.</p>
 <p><b>Is your code wrong rather than the paper?</b> The parts that do not depend on prediction reproduce, all {n_tests} unit tests pass, and our Table 1 formulas reproduce the paper's own numbers from its own inputs. The gaps appear exactly where the paper's procedure is most fragile.</p>
 <p><b>Why a month-block bootstrap?</b> Consecutive VPIN values share 49 of 50 buckets, and volatility clusters, so single buckets are not independent observations. Resampling months keeps that dependence inside each block.</p>
